@@ -6,7 +6,7 @@
 
   m.route.mode = 'pathname';
 
-  m.mount(document.body, {
+  m.mount(document.getElementById('app'), {
     controller: function() {
       var hash = {};
       try { hash = JSON.parse(atob(document.location.hash.substring(1))); }
@@ -50,7 +50,7 @@
         .then(this.fetch);
     },
     view: function(ctrl) {
-      return m('.container-fluid', [
+      return [
         m.component(form, {
           loading: ctrl.loading,
           solarSystems: ctrl.solarSystems,
@@ -60,7 +60,7 @@
         }),
         (ctrl.loading() ? m('p', 'Fetching killmails') : undefined),
         (ctrl.kms().length ? m.component(ffs, {kms: ctrl.kms, allianceColor: ctrl.allianceColor}) : undefined)
-      ]);
+      ];
     }
   })
 })();
