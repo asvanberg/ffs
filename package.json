@@ -1,0 +1,22 @@
+{
+  "name": "ffs",
+  "version": "1.0.0",
+  "description": "Fleet fight statistics for EVE Online",
+  "license": "MIT",
+  "author": {
+    "name": "Andreas Svanberg",
+    "email": "andreas.svanberg@mensa.se"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asvanberg/ffs"
+  },
+  "scripts": {
+    "start": "node ./server"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "browserify-middleware": "^7.0.0",
+    "mithril": "^0.2.4"
+  }
+}
