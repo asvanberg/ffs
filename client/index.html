@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -5,7 +6,28 @@
     div.form-control input:focus {
       outline: none;
     }
+    /* Stupid Bootstrap bug */
+    @media(min-width: 768px) {
+      .navbar-static-top .navbar-collapse {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
   </style>
 </head>
-<h1>Loading ...</h1>
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Fleet fight statistics</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <p class="navbar-text navbar-right">
+        Source code available at <a class="navbar-link" href="https://github.com/asvanberg/ffs">GitHub</a>
+      </p>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid" id="app">
+  <p>Loading ...</p>
+</div>
 <script src="/app.js" type="text/javascript" async></script>
