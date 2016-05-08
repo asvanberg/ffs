@@ -55,8 +55,11 @@
           to: ctrl.to,
           submit: ctrl.fetch
         }),
-        (ctrl.loading() ? m('p', 'Fetching killmails') : undefined),
-        (ctrl.kms().length ? m.component(ffs, {kms: ctrl.kms, allianceColor: ctrl.allianceColor}) : undefined)
+        (ctrl.loading()
+          ? m('p', 'Fetching killmails')
+          : (ctrl.kms().length
+            ? m.component(ffs, {kms: ctrl.kms, allianceColor: ctrl.allianceColor})
+            : m('p', 'No killmails found')))
       ];
     }
   })
