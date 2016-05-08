@@ -55,28 +55,28 @@ module.exports = (function() {
   }
 
   form.view = function(ctrl, args) {
-    return m('form.form-inline', {onsubmit: function() { return false}}, [
+    return m('form.form-inline.well.well-sm', {onsubmit: function() { return false}}, [
       m('.form-group', [
-        m('label', {for: 'solarSystem'}, 'Solar system'),
+        m('label', {for: 'solarSystem'}, 'Solar system'), ' ',
         m.component(solarSystem, {selected: args.solarSystems})
-      ]),
+      ]), ' ',
       m('.form-group', [
-        m('label', {for: 'fromDate'}, 'From date'),
+        m('label', {for: 'fromDate'}, 'From date'), ' ',
         m('input.form-control', {id: 'fromDate', onchange: m.withAttr('value', ctrl.setDate.bind(this, args.from)), value: ctrl.getDate(args.from())})
-      ]),
+      ]), ' ',
       m('.form-group', [
-        m('label', {for: 'fromTime'}, 'From time'),
+        m('label', {for: 'fromTime'}, 'From time'), ' ',
         m('input.form-control', {id: 'fromTime', onchange: m.withAttr('value', ctrl.setTime.bind(this, args.from)), value: ctrl.getTime(args.from())})
-      ]),
+      ]), ' ',
       m('.form-group', [
-        m('label', {for: 'toDate'}, 'To date'),
+        m('label', {for: 'toDate'}, 'To date'), ' ',
         m('input.form-control', {id: 'toDate', onchange: m.withAttr('value', ctrl.setDate.bind(this, args.to)), value: ctrl.getDate(args.to())})
-      ]),
+      ]), ' ',
       m('.form-group', [
-        m('label', {for: 'toTime'}, 'To time'),
+        m('label', {for: 'toTime'}, 'To time'), ' ',
         m('input.form-control', {id: 'toTime', onchange: m.withAttr('value', ctrl.setTime.bind(this, args.to)), value: ctrl.getTime(args.to())})
-      ]),
-      m('button.btn.btn-primary', {type: 'button', onclick: args.submit, disabled: args.loading()}, 'Submit')
+      ]), ' ',
+      m('button.btn.btn-primary', {type: 'button', onclick: args.submit, disabled: args.loading()}, 'Analyse')
     ]);
   }
 
