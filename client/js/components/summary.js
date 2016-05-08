@@ -32,19 +32,35 @@ module.exports = (function() {
         return {name: km.victim.allianceName, id: km.victim.allianceID};
       }).nubBy(function(alliance) { return alliance.id; });
     }
-    this.moveRight = args.moveRight;
-    this.moveLeft = args.moveLeft;
+    this.numCharacters = function(allianceID) {
+      function affiliatedAttackers(attackers) {
+        return attackers
+          .filter(function(attacker) { return attacker.allianceID === allianceID; })
+          .map(function(attacker) { return attacker.characterID; })
+      }
+      return args.allKms()
+        .reduce(function(characters, km) {
+          var x = characters.concat(affiliatedAttackers(km.attackers));
+          if (km.victim.allianceID === allianceID) {
+            x.push(km.victim.characterID);
+          }
+          return x;
+        }, [])
+        .nubBy(function(x) { return x; })
+        .length;
+    }
   }
 
-  summary.view = function(ctrl) {
+  summary.view = function(ctrl, args) {
     return m('div.panel.panel-default.text-center', [
       m('.panel-heading', ['Lost ', m('strong', [prettyNumber(ctrl.isk()), ' ISK']), ' over ', m('strong', [ctrl.ships(), ' ships.'])]),
       m('.list-group', [
         ctrl.alliances().map(function(alliance) {
           return m('a.list-group-item', [
-            m('button.pull-left.btn.btn-xs', {onclick: ctrl.moveLeft.bind(this, alliance.id)}, m.trust('&larr;')),
+            m('button.pull-left.btn.btn-xs', {onclick: args.moveLeft.bind(this, alliance.id)}, m.trust('&larr;')),
             alliance.name || m('i', 'Unaffiliated'),
-            m('button.pull-right.btn.btn-xs', {onclick: ctrl.moveRight.bind(this, alliance.id)}, m.trust('&rarr;'))
+            ' (', ctrl.numCharacters(alliance.id), ')',
+            m('button.pull-right.btn.btn-xs', {onclick: args.moveRight.bind(this, alliance.id)}, m.trust('&rarr;'))
           ]);
         })
       ])

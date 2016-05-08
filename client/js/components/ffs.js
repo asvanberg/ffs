@@ -18,6 +18,7 @@ module.exports = (function() {
         ['red', 'green', 'blue'].map(function(color) {
           return m('.col-md-4', [
             m.component(summary, {
+              allKms: args.kms,
               kms: function() { return args.kms().filter(function(km) {
                 return allianceColor(km.victim.allianceID) === color;
               })},
