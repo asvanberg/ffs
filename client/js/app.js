@@ -14,8 +14,8 @@
 
       this.loading = m.prop(false);
       this.solarSystems = m.prop([]);
-      this.from = m.prop(hash.from && new Date(hash.f * 1000) || new Date());
-      this.to = m.prop(hash.to && new Date(hash.t * 1000) || new Date());
+      this.from = m.prop(hash.f && new Date(hash.f * 1000) || new Date());
+      this.to = m.prop(hash.t && new Date(hash.t * 1000) || new Date());
       this.allianceColor = m.prop(hash.a || {});
       this.kms = m.prop([]);
       this.fetch = (function() {
