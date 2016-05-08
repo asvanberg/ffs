@@ -27,7 +27,7 @@ module.exports = (function() {
         .then(data => {
           kms = kms.concat(data)
 
-          if (data.length == 200) {
+          if (data.length === 200) {
             go(page + 1)
           }
           else {

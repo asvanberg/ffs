@@ -8,6 +8,10 @@ module.exports = (function() {
 
   var _allianceColor = {};
 
+  function allianceColor(allianceName) {
+    return _allianceColor[allianceName] || 'r';
+  }
+
   ffs.controller = function(args) {
     _allianceColor = args.allianceColor();
   }
@@ -62,10 +66,6 @@ module.exports = (function() {
         })
       )
     ]);
-  }
-
-  function allianceColor(allianceName) {
-    return _allianceColor[allianceName] || 'r';
   }
 
   return ffs;

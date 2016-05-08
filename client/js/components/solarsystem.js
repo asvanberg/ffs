@@ -14,7 +14,7 @@ module.exports = (function() {
       timeout = setTimeout(later, wait);
       if (callNow) func.apply(context, args);
     };
-  };
+  }
 
   var solarSystem = {};
 
@@ -54,7 +54,7 @@ module.exports = (function() {
           this.selectedIndex(Math.min(idx + 1, this.matches().length - 1))
           break;
         case 8: // backspace
-          if (event.target.value.length == 0) {
+          if (event.target.value.length === 0) {
             args.selected().pop();
           }
           break;
@@ -64,7 +64,7 @@ module.exports = (function() {
           this.selectedIndex(0);
           break;
       }
-      if (event.keyCode === 38 || event.keyCode == 40) {
+      if (event.keyCode === 38 || event.keyCode === 40) {
         event.preventDefault();
       }
     }.bind(this);

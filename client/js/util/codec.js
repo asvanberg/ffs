@@ -38,7 +38,7 @@ module.exports = (function() {
       return undefined;
     }
     var time = sections[1].split('+');
-    if (time.length != 2 || time.some(isNaN)) {
+    if (time.length !== 2 || time.some(isNaN)) {
       return undefined;
     }
 
