@@ -15,7 +15,7 @@ module.exports = (function() {
   ffs.view = function(ctrl, args) {
     return m('div', [
       m('.row',
-        ['red', 'green', 'blue'].map(function(color) {
+        ['r', 'g', 'b'].map(function(color) {
           return m('.col-md-4', [
             m.component(summary, {
               allKms: args.kms,
@@ -23,25 +23,25 @@ module.exports = (function() {
                 return allianceColor(km.victim.allianceID) === color;
               })},
               moveRight: function(alliance) {
-                if (color === 'red') {
-                  _allianceColor[alliance] = 'green';
+                if (color === 'r') {
+                  _allianceColor[alliance] = 'g';
                 }
-                else if (color === 'green') {
-                  _allianceColor[alliance] = 'blue';
+                else if (color === 'g') {
+                  _allianceColor[alliance] = 'b';
                 }
                 else {
                   delete _allianceColor[alliance];
                 }
               },
               moveLeft: function(alliance) {
-                if (color === 'green') {
+                if (color === 'g') {
                   delete _allianceColor[alliance];
                 }
-                else if (color === 'blue') {
-                  _allianceColor[alliance] = 'green';
+                else if (color === 'b') {
+                  _allianceColor[alliance] = 'g';
                 }
                 else {
-                  _allianceColor[alliance] = 'blue';
+                  _allianceColor[alliance] = 'b';
                 }
               }
             })
@@ -49,7 +49,7 @@ module.exports = (function() {
         })
       ),
       m('.row',
-        ['red', 'green', 'blue'].map(function(color) {
+        ['r', 'g', 'b'].map(function(color) {
           return m('.col-md-4', [
             m.component(shiplist, {
               kms: function() {
@@ -65,7 +65,7 @@ module.exports = (function() {
   }
 
   function allianceColor(allianceName) {
-    return _allianceColor[allianceName] || 'red';
+    return _allianceColor[allianceName] || 'r';
   }
 
   return ffs;
