@@ -11,6 +11,13 @@ module.exports = (function() {
     return b.zkb.totalValue - a.zkb.totalValue;
   }
 
+  function prettyNumber(num) {
+    if (num === 0) { return 0; }
+    else if (num > 1e9) { return (num / 1e9).toFixed(2) + 'B'; }
+    else if (num > 1e6) { return (num / 1e6).toFixed(2) + 'M'; }
+    else { return (num / 1e3) + 'K'; }
+  }
+
   if (!Array.prototype.groupBy) {
     Array.prototype.groupBy = function(f) {
       return this.reduce(function(map, v) {
@@ -31,13 +38,17 @@ module.exports = (function() {
     return m('div', b.map(function(shipTypeID) {
       return a[shipTypeID].map(function(km) {
         return m('.media', {key: km.killID}, [
-          m('.media-left', m('img', {src: `http://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_64.png`})),
+          m('.media-left',
+            m('a', {href: `https://zkillboard.com/kill/${km.killID}/`},
+              m('img.img-rounded', {src: `http://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_64.png`}))),
           m('.media-body', [
-            m('h4.media-heading', km.victim.characterName),
+            m('h4.media-heading',
+              m('a', {href: `https://zkillboard.com/character/${km.victim.characterID}/`},
+                km.victim.characterName)),
             km.victim.corporationName,
             (km.victim.allianceName ? [' (', km.victim.allianceName, ')'] : undefined),
             m('br'),
-            km.zkb.totalValue
+            prettyNumber(km.zkb.totalValue), ' ISK'
           ])
         ]);
       });
