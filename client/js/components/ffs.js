@@ -28,6 +28,9 @@ module.exports = (function() {
                 else if (color === 'green') {
                   _allianceColor[alliance] = 'blue';
                 }
+                else {
+                  delete _allianceColor[alliance];
+                }
               },
               moveLeft: function(alliance) {
                 if (color === 'green') {
@@ -35,6 +38,9 @@ module.exports = (function() {
                 }
                 else if (color === 'blue') {
                   _allianceColor[alliance] = 'green';
+                }
+                else {
+                  _allianceColor[alliance] = 'blue';
                 }
               }
             })
