@@ -13,7 +13,7 @@ module.exports = (function() {
     var endTime = `${to.getFullYear()}${zeroPad(to.getMonth() + 1)}${zeroPad(to.getDate())}${zeroPad(to.getHours())}${zeroPad(to.getMinutes())}`;
     return m.request({
       method: 'GET',
-      url: `https://zkillboard.com/api/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/`,
+      url: `https://zkillboard.com/api/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/no-items/`,
       background: true
     })
   };
