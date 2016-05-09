@@ -1,10 +1,17 @@
+'use strict';
+
 var path = require('path'),
     express = require('express'),
     app = express(),
-    pubDir = path.join(__dirname, '..', 'client')
-    browserify = require('browserify-middleware')
+    pubDir = path.join(__dirname, '..', 'client'),
+    browserify = require('browserify-middleware'),
+    babelify = require('babelify');
 
-app.get('/app.js', browserify(path.join(pubDir, 'js', 'app.js')))
+app.use('/app.js', browserify(path.join(pubDir, 'js', 'app.js'), {
+  transform: [babelify.configure({
+    presets: ['es2015']
+  })]
+}))
 
 app.get('/*', function(request, response) {
   response.sendFile(path.join(pubDir, 'index.html'))
