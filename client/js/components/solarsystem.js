@@ -60,9 +60,12 @@ module.exports = (function() {
           }
           break;
         case 13: // enter
-          this.select(this.matches()[idx])
-          event.target.value = '';
-          this.selectedIndex(0);
+          var solarSystem = this.matchs()[idx];
+          if (solarSystem) {
+            this.select(solarSystem)
+            event.target.value = '';
+            this.selectedIndex(0);
+          }
           break;
       }
       if (event.keyCode === 38 || event.keyCode === 40) {
