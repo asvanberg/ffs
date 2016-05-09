@@ -2,21 +2,6 @@ module.exports = (function() {
   var m = require('mithril'),
       solarSystem = require('./solarsystem');
 
-  function debounce(func, wait, immediate) {
-  	var timeout;
-  	return function() {
-  		var context = this, args = arguments;
-  		var later = function() {
-  			timeout = null;
-  			if (!immediate) func.apply(context, args);
-  		};
-  		var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-  		if (callNow) func.apply(context, args);
-  	};
-  }
-
   function zeroPad(num) {
     return num < 10 ? `0${num}` : num;
   }
@@ -45,13 +30,13 @@ module.exports = (function() {
       var month = zeroPad(date.getMonth() + 1);
       var day = zeroPad(date.getDate());
       return `${year}${month}${day}`;
-    }
+    };
 
     this.getTime = function(date) {
       var hour = zeroPad(date.getHours());
       var minute = zeroPad(date.getMinutes());
       return `${hour}${minute}`;
-    }
+    };
   }
 
   form.view = function(ctrl, args) {
