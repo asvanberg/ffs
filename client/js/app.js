@@ -31,6 +31,7 @@
           allianceColors: this.allianceColor()
         });
         document.location.hash = hash;
+        document.title = `Fight in ${this.solarSystems().map(s => s.name).join(', ')} on ${this.from().toDateString()}`
 
         z.fetchAll(this.solarSystems(), this.from(), this.to())
           .then(this.kms)
