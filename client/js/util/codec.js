@@ -13,18 +13,16 @@ module.exports = (function() {
 
   codec.encode = function(filter) {
     var solarSystems = filter.solarSystems
-      .map(function(solarSystem) { return solarSystem.id; })
+      .map(solarSystem => solarSystem.id)
       .join(',');
     var start = toMinutes(filter.from.getTime() - EVE_EPOCH);
     var duration = toMinutes(filter.to.getTime() - filter.from.getTime());
     var allianceColors = Object.keys(filter.allianceColors)
-      .map(function(allianceID) {
-        return filter.allianceColors[allianceID] + allianceID;
-      })
+      .map(allianceID => filter.allianceColors[allianceID] + allianceID)
       .join(',');
 
       return `${solarSystems}-${start}+${duration}-${allianceColors}`;
-  }
+  };
 
   codec.decode = function(str) {
     var sections = str.split('-');
@@ -43,25 +41,25 @@ module.exports = (function() {
     }
 
     // For some reason .map(parseInt) does not work
-    var solarSystems = systems.map(function (n) { return parseInt(n); });
+    var solarSystems = systems.map(n => parseInt(n));
     var from = new Date(EVE_EPOCH + fromMinutes(time[0]));
     var to = new Date(from.getTime() + fromMinutes(time[1]));
     var allianceColors = {};
     if (sections[2]) {
-      allianceColor = sections[2].split(',').reduce(function(acc, e) {
+      sections[2].split(',').reduce((acc, e) => {
         var color = e.charAt(0);
         var allianceID = e.substring(1);
         acc[allianceID] = color;
         return acc;
-      }, allianceColors)
+      }, allianceColors);
     }
     return {
-      from: from,
-      to: to,
-      solarSystems: solarSystems,
-      allianceColors: allianceColors
+      from,
+      to,
+      solarSystems,
+      allianceColors
     };
-  }
+  };
 
   return codec;
 })();

@@ -40,7 +40,7 @@ module.exports = (function() {
   }
 
   form.view = function(ctrl, args) {
-    return m('form.form-inline.well.well-sm', {onsubmit: function() { return false}}, [
+    return m('form.form-inline.well.well-sm', {onsubmit: () => false}, [
       m('.form-group', [
         m('label', {for: 'solarSystem'}, 'Solar system'), ' ',
         m.component(solarSystem, {selected: args.solarSystems})

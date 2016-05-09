@@ -8,7 +8,7 @@
   m.route.mode = 'pathname';
 
   m.mount(document.getElementById('app'), {
-    controller: function() {
+    controller() {
       var filter = codec.decode(document.location.hash.substring(1)) || {};
 
       this.loading = m.prop(false);
@@ -39,14 +39,12 @@
       }).bind(this);
 
       m.request({url: 'https://crest-tq.eveonline.com/solarsystems/'})
-        .then(function(data) { return data.items; })
-        .then(function(x) {
-          return x.filter(function(solarSystem) { return (filter.solarSystems || []).includes(solarSystem.id); });
-        })
+        .then(data => data.items)
+        .then(solarSystems => solarSystems.filter(solarSystem => (filter.solarSystems || []).includes(solarSystem.id)))
         .then(this.solarSystems)
         .then(this.fetch);
     },
-    view: function(ctrl) {
+    view(ctrl) {
       return [
         m.component(form, {
           loading: ctrl.loading,

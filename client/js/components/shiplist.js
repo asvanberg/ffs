@@ -20,7 +20,7 @@ module.exports = (function() {
 
   if (!Array.prototype.groupBy) {
     Array.prototype.groupBy = function(f) {
-      return this.reduce(function(map, v) {
+      return this.reduce((map, v) => {
         (map[f(v)] = map[f(v)] || []).push(v);
         return map;
       }, {})
@@ -28,16 +28,17 @@ module.exports = (function() {
   }
 
   shiplist.view = function(ctrl) {
-    var a = ctrl.kms().groupBy(function(km) { return km.victim.shipTypeID; });
+    var a = ctrl.kms().groupBy(km => km.victim.shipTypeID);
     var b = Object.keys(a)
-    .sort(function(s1, s2) {
-      var _s1 = a[s1].reduce(function(acc, e) { return acc + e.zkb.totalValue; }, 0);
-      var _s2 = a[s2].reduce(function(acc, e) { return acc + e.zkb.totalValue; }, 0);
-      return (_s2 / a[s2].length) - (_s1 / a[s1].length);
-    });
-    return m('div', b.map(function(shipTypeID) {
-      return a[shipTypeID].map(function(km) {
-        return m('.media', {key: km.killID}, [
+      .sort((s1, s2) => {
+        var totalValue = (sum, km) => sum + km.zkb.totalValue;
+        var _s1 = a[s1].reduce(totalValue, 0);
+        var _s2 = a[s2].reduce(totalValue, 0);
+        return (_s2 / a[s2].length) - (_s1 / a[s1].length);
+      });
+    return m('div', b.map(shipTypeID =>
+      a[shipTypeID].map(km =>
+        m('.media', {key: km.killID}, [
           m('.media-left',
             m('a', {href: `https://zkillboard.com/kill/${km.killID}/`},
               m('img.img-rounded', {src: `https://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_64.png`}))),
@@ -50,9 +51,9 @@ module.exports = (function() {
             m('br'),
             prettyNumber(km.zkb.totalValue), ' ISK'
           ])
-        ]);
-      });
-    }));
+        ])
+      )
+    ));
   }
 
   return shiplist;

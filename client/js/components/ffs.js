@@ -19,13 +19,13 @@ module.exports = (function() {
   ffs.view = function(ctrl, args) {
     return m('div', [
       m('.row',
-        ['r', 'g', 'b'].map(function(color) {
-          return m('.col-md-4', [
+        ['r', 'g', 'b'].map(color =>
+          m('.col-md-4', [
             m.component(summary, {
               allKms: args.kms,
-              kms: function() { return args.kms().filter(function(km) {
-                return allianceColor(km.victim.allianceID) === color;
-              })},
+              kms: () => args.kms().filter(km =>
+                allianceColor(km.victim.allianceID) === color
+              ),
               moveRight: function(alliance) {
                 if (color === 'r') {
                   _allianceColor[alliance] = 'g';
@@ -50,20 +50,19 @@ module.exports = (function() {
               }
             })
           ])
-        })
+        )
       ),
       m('.row',
-        ['r', 'g', 'b'].map(function(color) {
-          return m('.col-md-4', [
+        ['r', 'g', 'b'].map(color =>
+          m('.col-md-4', [
             m.component(shiplist, {
-              kms: function() {
-                return args.kms().filter(function(km) {
-                  return allianceColor(km.victim.allianceID) === color;
-                })
-              }
+              kms: () =>
+                args.kms().filter(km =>
+                  allianceColor(km.victim.allianceID) === color
+                )
             })
           ])
-        })
+        )
       )
     ]);
   }

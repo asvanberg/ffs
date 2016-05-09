@@ -19,7 +19,8 @@ module.exports = (function() {
   var solarSystem = {};
 
   solarSystem.controller = function(args) {
-    this.solarSystems = m.request({url: 'https://crest-tq.eveonline.com/solarsystems/'}).then(function(data) { return data.items; });
+    this.solarSystems = m.request({url: 'https://crest-tq.eveonline.com/solarsystems/'})
+      .then(data => data.items);
 
     this.matches = m.prop([]);
 
@@ -29,9 +30,9 @@ module.exports = (function() {
       }
       else {
         this.matches(this.solarSystems()
-          .filter(function(solarSystem) {
-            return !args.selected().includes(solarSystem) && solarSystem.name.toLowerCase().startsWith(str.toLowerCase())
-          })
+          .filter(solarSystem =>
+            !args.selected().includes(solarSystem) && solarSystem.name.toLowerCase().startsWith(str.toLowerCase())
+          )
           .slice(0, 10))
       }
       m.redraw();
@@ -72,14 +73,14 @@ module.exports = (function() {
 
   solarSystem.view = function(ctrl, args) {
     return m('div.form-control', {style: {position: 'relative', 'padding-top': '4px'}}, [
-      args.selected().map(function(solarSystem) {
-        return m('span.label.label-default', {key: solarSystem.id, style: {'margin-right':'3px'}}, solarSystem.name);
-      }),
+      args.selected().map(solarSystem =>
+        m('span.label.label-default', {key: solarSystem.id, style: {'margin-right':'3px'}}, solarSystem.name)
+      ),
       m('input', {key: 'input', onkeydown: ctrl.onkeydown, onkeyup: m.withAttr('value', ctrl.search), style: {border: 'none'}}),
       m('.list-group', {style: {position: 'absolute', 'margin-top': '4px', right: '-1px', left: '-1px', 'z-index': 10000}}, [
-        ctrl.matches().map(function(solarSystem, index) {
-          return m('a.list-group-item', {key: solarSystem.id, onclick: ctrl.select.bind(this, solarSystem), class: (index === ctrl.selectedIndex() ? 'active': '')}, solarSystem.name)
-        }),
+        ctrl.matches().map((solarSystem, index) =>
+          m('a.list-group-item', {key: solarSystem.id, onclick: ctrl.select.bind(this, solarSystem), class: (index === ctrl.selectedIndex() ? 'active': '')}, solarSystem.name)
+        ),
       ])
     ])
   }

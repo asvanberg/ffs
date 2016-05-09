@@ -8,7 +8,7 @@ module.exports = (function() {
   var zKillboard = {}
 
   zKillboard.fetchKillmails = function(solarSystems, from, to, page) {
-    var solarSystemID = solarSystems.reduce(function(acc, e) { return acc + ',' + e.id; }, '').substring(1);
+    var solarSystemID = solarSystems.map(solarSystem => solarSystem.id).join(',');
     var startTime = `${from.getFullYear()}${zeroPad(from.getMonth() + 1)}${zeroPad(from.getDate())}${zeroPad(from.getHours())}${zeroPad(from.getMinutes())}`;
     var endTime = `${to.getFullYear()}${zeroPad(to.getMonth() + 1)}${zeroPad(to.getDate())}${zeroPad(to.getHours())}${zeroPad(to.getMinutes())}`;
     return m.request({
@@ -33,7 +33,7 @@ module.exports = (function() {
           else {
             deferred.resolve(kms)
           }
-        })
+        });
     }
     go(1);
 
