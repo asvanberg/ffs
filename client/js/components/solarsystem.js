@@ -60,7 +60,7 @@ module.exports = (function() {
           }
           break;
         case 13: // enter
-          var solarSystem = this.matchs()[idx];
+          var solarSystem = this.matches()[idx];
           if (solarSystem) {
             this.select(solarSystem)
             event.target.value = '';
