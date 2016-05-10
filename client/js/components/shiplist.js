@@ -13,9 +13,9 @@ module.exports = (function() {
 
   function prettyNumber(num) {
     if (num === 0) { return 0; }
-    else if (num > 1e9) { return (num / 1e9).toFixed(2) + 'B'; }
-    else if (num > 1e6) { return (num / 1e6).toFixed(2) + 'M'; }
-    else { return (num / 1e3) + 'K'; }
+    else if (num > 1e9) { return `${(num / 1e9).toFixed(2)}B`; }
+    else if (num > 1e6) { return `${(num / 1e6).toFixed(2)}M`; }
+    else { return `${(num / 1e3).toFixed(2)}K`; }
   }
 
   if (!Array.prototype.groupBy) {
@@ -23,7 +23,7 @@ module.exports = (function() {
       return this.reduce((map, v) => {
         (map[f(v)] = map[f(v)] || []).push(v);
         return map;
-      }, {})
+      }, {});
     }
   }
 
@@ -47,7 +47,7 @@ module.exports = (function() {
               m('a', {href: `https://zkillboard.com/character/${km.victim.characterID}/`},
                 km.victim.characterName)),
             km.victim.corporationName,
-            (km.victim.allianceName ? [' (', km.victim.allianceName, ')'] : undefined),
+            (km.victim.allianceName ? [' (', km.victim.allianceName, ')'] : null),
             m('br'),
             prettyNumber(km.zkb.totalValue), ' ISK'
           ])

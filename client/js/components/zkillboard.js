@@ -1,11 +1,11 @@
 module.exports = (function() {
-  var m = require('mithril')
+  var m = require('mithril');
 
   function zeroPad(num) {
     return num < 10 ? `0${num}` : num;
   }
 
-  var zKillboard = {}
+  var zKillboard = {};
 
   zKillboard.fetchKillmails = function(solarSystems, from, to, page) {
     function formatDate(date) {
@@ -19,7 +19,7 @@ module.exports = (function() {
       method: 'GET',
       url: `https://zkillboard.com/api/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/no-items/`,
       background: true
-    })
+    });
   };
 
   zKillboard.fetchAll = function(solarSystemID, from, to) {
@@ -29,13 +29,13 @@ module.exports = (function() {
     function go(page) {
       zKillboard.fetchKillmails(solarSystemID, from, to, page)
         .then(data => {
-          kms = kms.concat(data)
+          kms = kms.concat(data);
 
           if (data.length === 200) {
-            go(page + 1)
+            go(page + 1);
           }
           else {
-            deferred.resolve(kms)
+            deferred.resolve(kms);
           }
         });
     }

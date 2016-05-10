@@ -29,15 +29,15 @@ module.exports = (function() {
 
     // Must have at least 2 sections (systems and time)
     if (sections.length < 2) {
-      return undefined;
+      return null;
     }
     var systems = sections[0].split(',');
     if (systems.some(isNaN)) {
-      return undefined;
+      return null;
     }
     var time = sections[1].split('+');
     if (time.length !== 2 || time.some(isNaN)) {
-      return undefined;
+      return null;
     }
 
     // For some reason .map(parseInt) does not work

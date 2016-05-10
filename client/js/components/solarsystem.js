@@ -33,7 +33,7 @@ module.exports = (function() {
           .filter(solarSystem =>
             !args.selected().includes(solarSystem) && solarSystem.name.toLowerCase().startsWith(str.toLowerCase())
           )
-          .slice(0, 10))
+          .slice(0, 10));
       }
       m.redraw();
     }.bind(this), 250);
@@ -49,10 +49,10 @@ module.exports = (function() {
       var idx = this.selectedIndex();
       switch (event.keyCode) {
         case 38: // arrow up
-          this.selectedIndex(Math.max(idx - 1, 0))
+          this.selectedIndex(Math.max(idx - 1, 0));
           break;
         case 40: // arrow down
-          this.selectedIndex(Math.min(idx + 1, this.matches().length - 1))
+          this.selectedIndex(Math.min(idx + 1, this.matches().length - 1));
           break;
         case 8: // backspace
           if (event.target.value.length === 0) {
@@ -62,7 +62,7 @@ module.exports = (function() {
         case 13: // enter
           var solarSystem = this.matches()[idx];
           if (solarSystem) {
-            this.select(solarSystem)
+            this.select(solarSystem);
             event.target.value = '';
             this.selectedIndex(0);
           }
@@ -83,7 +83,7 @@ module.exports = (function() {
       m('.list-group', {style: {position: 'absolute', 'margin-top': '4px', right: '-1px', left: '-1px', 'z-index': 10000}}, [
         ctrl.matches().map((solarSystem, index) =>
           m('a.list-group-item', {key: solarSystem.id, onclick: ctrl.select.bind(this, solarSystem), class: (index === ctrl.selectedIndex() ? 'active': '')}, solarSystem.name)
-        ),
+        )
       ])
     ])
   }

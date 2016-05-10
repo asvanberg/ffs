@@ -26,7 +26,7 @@ module.exports = (function() {
               kms: () => args.kms().filter(km =>
                 allianceColor(km.victim.allianceID) === color
               ),
-              moveRight: function(alliance) {
+              moveRight(alliance) {
                 if (color === 'r') {
                   _allianceColor[alliance] = 'g';
                 }
@@ -37,7 +37,7 @@ module.exports = (function() {
                   delete _allianceColor[alliance];
                 }
               },
-              moveLeft: function(alliance) {
+              moveLeft(alliance) {
                 if (color === 'g') {
                   delete _allianceColor[alliance];
                 }

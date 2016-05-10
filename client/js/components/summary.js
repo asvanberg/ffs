@@ -5,9 +5,9 @@ module.exports = (function() {
 
   function prettyNumber(num) {
     if (num === 0) { return 0; }
-    else if (num > 1e9) { return (num / 1e9).toFixed(2) + 'B'; }
-    else if (num > 1e6) { return (num / 1e6).toFixed(2) + 'M'; }
-    else { return (num / 1e3) + 'K'; }
+    else if (num > 1e9) { return `${(num / 1e9).toFixed(2)}B`; }
+    else if (num > 1e6) { return `${(num / 1e6).toFixed(2)}M`; }
+    else { return `${(num / 1e3).toFixed(2)}K`; }
   }
 
   if (!Array.prototype.nubBy) {
@@ -26,14 +26,14 @@ module.exports = (function() {
     }
     this.alliances = function() {
       return kms()
-        .map(km => { return {name: km.victim.allianceName, id: km.victim.allianceID} })
+        .map(km => { return {name: km.victim.allianceName, id: km.victim.allianceID}; })
         .nubBy(alliance => alliance.id);
     }
     this.numCharacters = function(allianceID) {
       function affiliatedAttackers(attackers) {
         return attackers
           .filter(attacker => attacker.allianceID === allianceID)
-          .map(attacker => attacker.characterID)
+          .map(attacker => attacker.characterID);
       }
       return args.allKms()
         .reduce(
