@@ -8,9 +8,13 @@ module.exports = (function() {
   var zKillboard = {}
 
   zKillboard.fetchKillmails = function(solarSystems, from, to, page) {
+    function formatDate(date) {
+      return `${date.getFullYear()}${zeroPad(date.getMonth() + 1)}${zeroPad(date.getDate())}`
+           + `${zeroPad(date.getHours())}${zeroPad(date.getMinutes())}`;
+    }
     var solarSystemID = solarSystems.map(solarSystem => solarSystem.id).join(',');
-    var startTime = `${from.getFullYear()}${zeroPad(from.getMonth() + 1)}${zeroPad(from.getDate())}${zeroPad(from.getHours())}${zeroPad(from.getMinutes())}`;
-    var endTime = `${to.getFullYear()}${zeroPad(to.getMonth() + 1)}${zeroPad(to.getDate())}${zeroPad(to.getHours())}${zeroPad(to.getMinutes())}`;
+    var startTime = formatDate(from);
+    var endTime = formatDate(to.getTime() > Date.now() ? new Date() : to);
     return m.request({
       method: 'GET',
       url: `https://zkillboard.com/api/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/no-items/`,
