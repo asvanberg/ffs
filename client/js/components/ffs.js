@@ -6,14 +6,32 @@ module.exports = (function() {
 
   var ffs = {};
 
-  var _allianceColor = {};
-
-  function allianceColor(allianceName) {
-    return _allianceColor[allianceName] || 'r';
-  }
-
   ffs.controller = function(args) {
-    _allianceColor = args.allianceColor();
+    function allianceColor(allianceID) {
+      return args.allianceColor()[allianceID] || 'r';
+    }
+
+    return {
+      characters(color) {
+        return args.characters().filter(character => allianceColor(character.alliance.id) === color);
+      },
+      alliances(color) {
+        return args.alliances().filter(alliance => allianceColor(alliance.id) === color);
+      },
+      kms(color) {
+        return args.kms().filter(km => allianceColor(km.victim.allianceID) === color);
+      },
+      moveRight(color, allianceID) {
+        if (color === 'r') { args.allianceColor()[allianceID] = 'g'; }
+        else if (color === 'g') { args.allianceColor()[allianceID] = 'b'; }
+        else { delete args.allianceColor()[allianceID]; }
+      },
+      moveLeft(color, allianceID) {
+        if (color === 'g') { delete args.allianceColor()[allianceID]; }
+        else if (color === 'b') { args.allianceColor()[allianceID] = 'g'; }
+        else { args.allianceColor()[allianceID] = 'b'; }
+      }
+    };
   }
 
   ffs.view = function(ctrl, args) {
@@ -22,32 +40,11 @@ module.exports = (function() {
         ['r', 'g', 'b'].map(color =>
           m('.col-md-4', [
             m.component(summary, {
-              allKms: args.kms,
-              kms: () => args.kms().filter(km =>
-                allianceColor(km.victim.allianceID) === color
-              ),
-              moveRight(alliance) {
-                if (color === 'r') {
-                  _allianceColor[alliance] = 'g';
-                }
-                else if (color === 'g') {
-                  _allianceColor[alliance] = 'b';
-                }
-                else {
-                  delete _allianceColor[alliance];
-                }
-              },
-              moveLeft(alliance) {
-                if (color === 'g') {
-                  delete _allianceColor[alliance];
-                }
-                else if (color === 'b') {
-                  _allianceColor[alliance] = 'g';
-                }
-                else {
-                  _allianceColor[alliance] = 'b';
-                }
-              }
+              characters: ctrl.characters.bind(this, color),
+              alliances: ctrl.alliances.bind(this, color),
+              kms: ctrl.kms.bind(this, color),
+              moveRight: ctrl.moveRight.bind(this, color),
+              moveLeft: ctrl.moveLeft.bind(this, color)
             })
           ])
         )
@@ -56,10 +53,7 @@ module.exports = (function() {
         ['r', 'g', 'b'].map(color =>
           m('.col-md-4', [
             m.component(shiplist, {
-              kms: () =>
-                args.kms().filter(km =>
-                  allianceColor(km.victim.allianceID) === color
-                )
+              kms: ctrl.kms.bind(this, color)
             })
           ])
         )

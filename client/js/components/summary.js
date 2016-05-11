@@ -10,55 +10,33 @@ module.exports = (function() {
     else { return `${(num / 1e3).toFixed(2)}K`; }
   }
 
-  if (!Array.prototype.nubBy) {
-    Array.prototype.nubBy = function(f) {
-      return this.filter((value, index, self) => self.findIndex(duplicate => f(duplicate) === f(value)) === index);
-    }
-  }
-
   summary.controller = function(args) {
-    var kms = args.kms;
-    this.isk = function() {
-      return kms().reduce((sum, km) => sum + km.zkb.totalValue, 0);
+    this.isk = function(kms) {
+      return kms.reduce((sum, km) => sum + km.zkb.totalValue, 0);
     }
-    this.ships = function() {
-      return kms().length;
-    }
-    this.alliances = function() {
-      return kms()
-        .map(km => { return {name: km.victim.allianceName, id: km.victim.allianceID}; })
-        .nubBy(alliance => alliance.id);
-    }
-    this.numCharacters = function(allianceID) {
-      function affiliatedAttackers(attackers) {
-        return attackers
-          .filter(attacker => attacker.allianceID === allianceID)
-          .map(attacker => attacker.characterID);
-      }
-      return args.allKms()
-        .reduce(
-          (characters, km) => {
-            var x = characters.concat(affiliatedAttackers(km.attackers));
-            if (km.victim.allianceID === allianceID) {
-              x.push(km.victim.characterID);
-            }
-            return x;
-          },
-          [])
-        .nubBy(x => x)
+    this.numCharacters = function(alliances) {
+      return args.characters()
+        .filter(character =>
+          alliances.some(alliance => alliance.id === character.alliance.id))
         .length;
     }
   }
 
   summary.view = function(ctrl, args) {
     return m('div.panel.panel-default.text-center', [
-      m('.panel-heading', ['Lost ', m('strong', [prettyNumber(ctrl.isk()), ' ISK']), ' over ', m('strong', [ctrl.ships(), ' ships.'])]),
+      m('.panel-heading', [
+        m('strong', [ctrl.numCharacters(args.alliances()), ' pilots']),
+        ' losing ',
+        m('strong', [args.kms().length, ' ships']),
+        ' totalling ',
+        m('strong', [prettyNumber(ctrl.isk(args.kms())), ' ISK'])
+      ]),
       m('.list-group', [
-        ctrl.alliances().map(alliance =>
+        args.alliances().map(alliance =>
           m('a.list-group-item', [
             m('button.pull-left.btn.btn-xs', {onclick: args.moveLeft.bind(this, alliance.id)}, m.trust('&larr;')),
             alliance.name || m('i', 'Unaffiliated'),
-            ' (', ctrl.numCharacters(alliance.id), ')',
+            ' (', ctrl.numCharacters([alliance]), ')',
             m('button.pull-right.btn.btn-xs', {onclick: args.moveRight.bind(this, alliance.id)}, m.trust('&rarr;'))
           ])
         )

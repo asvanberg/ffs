@@ -5,7 +5,53 @@
       ffs = require('./components/ffs'),
       codec = require('./util/codec');
 
+  if (!Array.prototype.nubBy) {
+    Array.prototype.nubBy = function(f) {
+      return this.filter((value, index, self) => self.findIndex(duplicate => f(duplicate) === f(value)) === index);
+    }
+  }
+
   m.route.mode = 'pathname';
+
+  function parseAlliances(alliances, kms) {
+    var as = kms
+      .reduce((acc, km) => {
+        var attackingAlliances = km.attackers
+          .map(attacker => { return {id: attacker.allianceID, name: attacker.allianceName}; });
+        return acc.concat(attackingAlliances, {id: km.victim.allianceID, name: km.victim.allianceName});
+      }, [])
+      .nubBy(alliance => alliance.id);
+    alliances(as);
+    return kms;
+  }
+
+  function parseCharacters(characters, kms) {
+    var cs = kms
+      .reduce((acc, km) => {
+        var attackingCharacters = km.attackers
+          .map(attacker => {
+            return {
+              id: attacker.characterID,
+              name: attacker.characterName,
+              alliance: {
+                id: attacker.allianceID,
+                name: attacker.allianceName
+              }
+            };
+          });
+        return acc.concat(attackingCharacters, {
+          id: km.victim.characterID,
+          name: km.victim.characterName,
+          alliance: {
+            id: km.victim.allianceID,
+            name: km.victim.allianceName
+          }
+        });
+      }, [])
+      .nubBy(character => character.id);
+    characters(cs);
+    return kms;
+  }
 
   m.mount(document.getElementById('app'), {
     controller() {
@@ -17,6 +63,8 @@
       this.to = m.prop(filter.to || new Date());
       this.allianceColor = m.prop(filter.allianceColors || {});
       this.kms = m.prop([]);
+      this.alliances = m.prop([]);
+      this.characters = m.prop([]);
       this.fetch = (function() {
         if (!(this.solarSystems().length && this.from() && this.to())) {
           return;
@@ -35,6 +83,8 @@
 
         z.fetchAll(this.solarSystems(), this.from(), this.to())
           .then(this.kms)
+          .then(parseAlliances.bind(this, this.alliances))
+          .then(parseCharacters.bind(this, this.characters))
           .then(this.loading.bind(this, false))
           .then(m.redraw);
       }).bind(this);
@@ -57,7 +107,12 @@
         (ctrl.loading()
           ? m('p', 'Fetching killmails')
           : (ctrl.kms().length
-            ? m.component(ffs, {kms: ctrl.kms, allianceColor: ctrl.allianceColor})
+            ? m.component(ffs, {
+              kms: ctrl.kms,
+              allianceColor: ctrl.allianceColor,
+              alliances: ctrl.alliances,
+              characters: ctrl.characters
+            })
             : m('p', 'No killmails found')))
       ];
     }
