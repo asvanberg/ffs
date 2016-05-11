@@ -105,7 +105,7 @@
           submit: ctrl.fetch
         }),
         (ctrl.loading()
-          ? m('p', 'Fetching killmails')
+          ? m('.text-center', [m('img[src=ajax-loader.gif]'), m('p', 'Fetching killmails')])
           : (ctrl.kms().length
             ? m.component(ffs, {
               kms: ctrl.kms,

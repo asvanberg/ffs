@@ -13,9 +13,7 @@ app.use('/app.js', browserify(path.join(pubDir, 'js', 'app.js'), {
   })]
 }))
 
-app.get('/*', function(request, response) {
-  response.sendFile(path.join(pubDir, 'index.html'))
-});
+app.use(express.static(path.join(pubDir, 'static')));
 
 if (require.main === module) {
   var port = process.env.PORT || 5000;
