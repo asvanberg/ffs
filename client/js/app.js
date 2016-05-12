@@ -59,7 +59,7 @@
 
       this.loading = m.prop(false);
       this.solarSystems = m.prop([]);
-      this.from = m.prop(filter.from || new Date());
+      this.from = m.prop(filter.from || new Date(Date.now() - 1000 * 60 * 60)); // One hour ago
       this.to = m.prop(filter.to || new Date());
       this.allianceColor = m.prop(filter.allianceColors || {});
       this.kms = m.prop([]);
