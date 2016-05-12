@@ -13,28 +13,28 @@ module.exports = (function() {
       var year = value.substring(0, 4);
       var month = value.substring(4, 6);
       var day = value.substring(6, 8);
-      date().setFullYear(year);
-      date().setMonth(month - 1);
-      date().setDate(day);
+      date().setUTCFullYear(year);
+      date().setUTCMonth(month - 1);
+      date().setUTCDate(day);
     };
 
     this.setTime = function(date, value) {
       var hour = value.substring(0, 2);
       var minute = value.substring(2, 4);
-      date().setHours(hour);
-      date().setMinutes(minute);
+      date().setUTCHours(hour);
+      date().setUTCMinutes(minute);
     };
 
     this.getDate = function(date) {
-      var year = date.getFullYear();
-      var month = zeroPad(date.getMonth() + 1);
-      var day = zeroPad(date.getDate());
+      var year = date.getUTCFullYear();
+      var month = zeroPad(date.getUTCMonth() + 1);
+      var day = zeroPad(date.getUTCDate());
       return `${year}${month}${day}`;
     };
 
     this.getTime = function(date) {
-      var hour = zeroPad(date.getHours());
-      var minute = zeroPad(date.getMinutes());
+      var hour = zeroPad(date.getUTCHours());
+      var minute = zeroPad(date.getUTCMinutes());
       return `${hour}${minute}`;
     };
   }

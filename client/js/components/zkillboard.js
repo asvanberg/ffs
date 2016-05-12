@@ -9,8 +9,8 @@ module.exports = (function() {
 
   zKillboard.fetchKillmails = function(solarSystems, from, to, page) {
     function formatDate(date) {
-      return `${date.getFullYear()}${zeroPad(date.getMonth() + 1)}${zeroPad(date.getDate())}`
-           + `${zeroPad(date.getHours())}${zeroPad(date.getMinutes())}`;
+      return `${date.getUTCFullYear()}${zeroPad(date.getUTCMonth() + 1)}${zeroPad(date.getUTCDate())}`
+           + `${zeroPad(date.getUTCHours())}${zeroPad(date.getUTCMinutes())}`;
     }
     var solarSystemID = solarSystems.map(solarSystem => solarSystem.id).join(',');
     var startTime = formatDate(from);
