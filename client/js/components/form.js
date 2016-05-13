@@ -40,7 +40,7 @@ module.exports = (function() {
   }
 
   form.view = function(ctrl, args) {
-    return m('form.form-inline.well.well-sm', {onsubmit: () => false}, [
+    return m('form.form-inline.well.well-sm', {onsubmit: e => { e.preventDefault(); !args.loading() && args.submit() }}, [
       m('.form-group', [
         m('label', {for: 'solarSystem'}, 'Solar system'), ' ',
         m.component(solarSystem, {selected: args.solarSystems})
@@ -61,7 +61,7 @@ module.exports = (function() {
         m('label', {for: 'toTime'}, 'To time'), ' ',
         m('input.form-control', {id: 'toTime', onchange: m.withAttr('value', ctrl.setTime.bind(this, args.to)), value: ctrl.getTime(args.to())})
       ]), ' ',
-      m('button.btn.btn-primary', {type: 'button', onclick: args.submit, disabled: args.loading()}, 'Analyse')
+      m('button.btn.btn-primary', {type: 'submit', disabled: args.loading()}, 'Analyse')
     ]);
   }
 

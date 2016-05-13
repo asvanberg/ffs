@@ -50,9 +50,11 @@ module.exports = (function() {
       switch (event.keyCode) {
         case 38: // arrow up
           this.selectedIndex(Math.max(idx - 1, 0));
+          event.preventDefault();
           break;
         case 40: // arrow down
           this.selectedIndex(Math.min(idx + 1, this.matches().length - 1));
+          event.preventDefault();
           break;
         case 8: // backspace
           if (event.target.value.length === 0) {
@@ -60,6 +62,9 @@ module.exports = (function() {
           }
           break;
         case 13: // enter
+          if (event.target.value !== '') {
+            event.preventDefault();
+          }
           var solarSystem = this.matches()[idx];
           if (solarSystem) {
             this.select(solarSystem);
@@ -67,9 +72,6 @@ module.exports = (function() {
             this.selectedIndex(0);
           }
           break;
-      }
-      if (event.keyCode === 38 || event.keyCode === 40) {
-        event.preventDefault();
       }
     }.bind(this);
   };
