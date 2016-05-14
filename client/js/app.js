@@ -72,22 +72,46 @@
         this.loading(true);
         this.kms([]);
 
-        var hash = codec.encode({
-          from: this.from(),
-          to: this.to(),
-          solarSystems: this.solarSystems(),
-          allianceColors: this.allianceColor()
-        });
-        document.location.hash = hash;
-        document.title = `Fight in ${this.solarSystems().map(s => s.name).join(', ')} on ${this.from().toDateString()}`;
-
         z.fetchAll(this.solarSystems(), this.from(), this.to())
           .then(this.kms)
           .then(parseAlliances.bind(this, this.alliances))
           .then(parseCharacters.bind(this, this.characters))
           .then(this.loading.bind(this, false))
-          .then(m.redraw);
+          .then(m.redraw)
+          .then(() => {
+            const state = {
+              from: this.from(),
+              to: this.to(),
+              solarSystems: this.solarSystems(),
+              allianceColors: this.allianceColor(),
+              kms: this.kms()
+            };
+            const hash = codec.encode(state);
+            if (hash !== document.location.hash) {
+              const title = `Fight in ${this.solarSystems().map(s => s.name).join(', ')} on ${this.from().toDateString()}`;
+              window.history.pushState(state, title, `#${hash}`);
+              document.title = title;
+            }
+          });
       }).bind(this);
+
+      window.addEventListener('popstate', e => {
+        const filter = e.state;
+        if (filter) {
+          this.solarSystems(filter.solarSystems);
+          this.from(filter.from);
+          this.to(filter.to);
+          this.allianceColor(filter.allianceColors);
+          this.kms(filter.kms);
+          parseAlliances(this.alliances, filter.kms);
+          parseCharacters(this.characters, filter.kms);
+        }
+        else {
+          this.solarSystems([]);
+          this.kms([]);
+        }
+        m.redraw();
+      });
 
       m.request({url: 'https://crest-tq.eveonline.com/solarsystems/'})
         .then(data => data.items)
