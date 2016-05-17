@@ -82,8 +82,9 @@
           this.to(filter.to);
           this.allianceColor(filter.allianceColors);
           this.kms(filter.kms);
-          parseAlliances(this.alliances, filter.kms);
-          parseCharacters(this.characters, filter.kms);
+          const [characters, alliances] = analyze(filter.kms);
+          this.characters(characters);
+          this.alliances(alliances);
         }
         else {
           this.solarSystems([]);
