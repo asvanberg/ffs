@@ -13,44 +13,20 @@
 
   m.route.mode = 'pathname';
 
-  function parseAlliances(alliances, kms) {
-    var as = kms
-      .reduce((acc, km) => {
-        var attackingAlliances = km.attackers
-          .map(attacker => { return {id: attacker.allianceID, name: attacker.allianceName}; });
-        return acc.concat(attackingAlliances, {id: km.victim.allianceID, name: km.victim.allianceName});
-      }, [])
-      .nubBy(alliance => alliance.id);
-    alliances(as);
-    return kms;
-  }
+  function analyze(kms) {
+    const [characters, alliances] = kms.reduce(([characters, alliances], km) => {
+      const victimAlliance = {id: km.victim.allianceID, name: km.victim.allianceName};
+      const victim = {id: km.victim.characterID, name: km.victim.characterName, alliance: victimAlliance};
 
-  function parseCharacters(characters, kms) {
-    var cs = kms
-      .reduce((acc, km) => {
-        var attackingCharacters = km.attackers
-          .map(attacker => {
-            return {
-              id: attacker.characterID,
-              name: attacker.characterName,
-              alliance: {
-                id: attacker.allianceID,
-                name: attacker.allianceName
-              }
-            };
-          });
-        return acc.concat(attackingCharacters, {
-          id: km.victim.characterID,
-          name: km.victim.characterName,
-          alliance: {
-            id: km.victim.allianceID,
-            name: km.victim.allianceName
-          }
-        });
-      }, [])
-      .nubBy(character => character.id);
-    characters(cs);
-    return kms;
+      const [ac, aa] = km.attackers.reduce(([attackingCharacters, attackingAlliances], attacker) => {
+        const attackingAlliance = {id: attacker.allianceID, name: attacker.allianceName};
+        const attackingCharacter = {id: attacker.characterID, name: attacker.characterName, alliance: attackingAlliance};
+        return [attackingCharacters.concat(attackingCharacter), attackingAlliances.concat(attackingAlliance)];
+      }, [[],[]]);
+
+      return [characters.concat(victim, ac), alliances.concat(victimAlliance, aa)];
+    }, [[], []]);
+    return [characters.nubBy(c => c.id), alliances.nubBy(a => a.id)];
   }
 
   m.mount(document.getElementById('app'), {
@@ -74,8 +50,11 @@
 
         z.fetchAll(this.solarSystems(), this.from(), this.to())
           .then(this.kms)
-          .then(parseAlliances.bind(this, this.alliances))
-          .then(parseCharacters.bind(this, this.characters))
+          .then(kms => {
+            const [characters, alliances] = analyze(kms);
+            this.characters(characters);
+            this.alliances(alliances);
+          })
           .then(this.loading.bind(this, false))
           .then(m.redraw)
           .then(() => {
