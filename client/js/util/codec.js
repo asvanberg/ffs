@@ -1,7 +1,10 @@
 module.exports = (function() {
   var codec = {};
 
-  var EVE_EPOCH = Date.UTC(2003, 4, 6); // May 6th 2003
+  const EVE_EPOCH = Date.UTC(2003, 4, 6); // May 6th 2003
+  const ALLIANCE_ID_PADDING = 99000000;
+  const SOLARSYSTEM_ID_PADDING = 30000000;
+  const RADIX = 36;
 
   function toMinutes(ms) {
     return Math.floor(ms / 1000 / 60);
@@ -13,12 +16,12 @@ module.exports = (function() {
 
   codec.encode = function(filter) {
     var solarSystems = filter.solarSystems
-      .map(solarSystem => solarSystem.id)
+      .map(solarSystem => (solarSystem.id - SOLARSYSTEM_ID_PADDING).toString(RADIX))
       .join(',');
     var start = toMinutes(filter.from.getTime() - EVE_EPOCH);
     var duration = toMinutes(filter.to.getTime() - filter.from.getTime());
     var allianceColors = Object.keys(filter.allianceColors)
-      .map(allianceID => filter.allianceColors[allianceID] + allianceID)
+      .map(allianceID => filter.allianceColors[allianceID] + (allianceID - ALLIANCE_ID_PADDING).toString(RADIX))
       .join(',');
 
       return `${solarSystems}-${start}+${duration}-${allianceColors}`;
@@ -41,14 +44,15 @@ module.exports = (function() {
     }
 
     // For some reason .map(parseInt) does not work
-    var solarSystems = systems.map(n => parseInt(n));
+    var solarSystems = systems.map(n => parseInt(n, RADIX) + SOLARSYSTEM_ID_PADDING);
     var from = new Date(EVE_EPOCH + fromMinutes(time[0]));
     var to = new Date(from.getTime() + fromMinutes(time[1]));
     var allianceColors = {};
     if (sections[2]) {
-      sections[2].split(',').reduce((acc, e) => {
+      // Joining index 2+ in case thare are negative numbers
+      sections.slice(2).join('-').split(',').reduce((acc, e) => {
         var color = e.charAt(0);
-        var allianceID = e.substring(1);
+        var allianceID = parseInt(e.substring(1), RADIX) + ALLIANCE_ID_PADDING;
         acc[allianceID] = color;
         return acc;
       }, allianceColors);
