@@ -5,6 +5,8 @@
       ffs = require('./components/ffs'),
       codec = require('./util/codec');
 
+  const NUM_CHARACTERS_RELEVANT_CUTOFF = 10;
+
   if (!Array.prototype.nubBy) {
     Array.prototype.nubBy = function(f) {
       return this.filter((value, index, self) => self.findIndex(duplicate => f(duplicate) === f(value)) === index);
@@ -29,6 +31,16 @@
     return [characters.nubBy(c => c.id), alliances.nubBy(a => a.id)];
   }
 
+  function relevant(kms, characters, alliances) {
+    function numCharacters(alliance) {
+      return characters.filter(character => character.alliance.id === alliance.id).length;
+    }
+    const relevantAlliances = alliances.filter(alliance => alliance.id && numCharacters(alliance) >= NUM_CHARACTERS_RELEVANT_CUTOFF);
+    const relevantCharacters = characters.filter(character => relevantAlliances.some(alliance => alliance.id === character.alliance.id));
+    const relevantKMs = kms.filter(km => relevantAlliances.some(alliance => alliance.id === km.victim.allianceID));
+    return [relevantKMs, relevantCharacters, relevantAlliances];
+  }
+
   m.mount(document.getElementById('app'), {
     controller() {
       var filter = codec.decode(document.location.hash.substring(1)) || {};
@@ -49,11 +61,12 @@
         this.kms([]);
 
         z.fetchAll(this.solarSystems(), this.from(), this.to())
-          .then(this.kms)
           .then(kms => {
             const [characters, alliances] = analyze(kms);
-            this.characters(characters);
-            this.alliances(alliances);
+            const [relevantKMs, relevantCharacters, relevantAlliances] = relevant(kms, characters, alliances);
+            this.kms(relevantKMs);
+            this.characters(relevantCharacters);
+            this.alliances(relevantAlliances);
           })
           .then(this.loading.bind(this, false))
           .then(m.redraw)
