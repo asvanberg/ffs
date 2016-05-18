@@ -11,6 +11,9 @@
     "type": "git",
     "url": "https://github.com/asvanberg/ffs"
   },
+  "engines": {
+    "node": "6.1.0"
+  },
   "scripts": {
     "start": "node ./server"
   },
