@@ -24,10 +24,12 @@ module.exports = (function() {
       moveRight(color, allianceID) {
         if (color === 'r') { args.allianceColor()[allianceID] = 'g'; }
         else if (color === 'g') { args.allianceColor()[allianceID] = 'b'; }
+        else if (color === 'b') { args.allianceColor()[allianceID] = 'y'; }
         else { delete args.allianceColor()[allianceID]; }
       },
       moveLeft(color, allianceID) {
-        if (color === 'g') { delete args.allianceColor()[allianceID]; }
+        if (color === 'r') { args.allianceColor()[allianceID] = 'y'; }
+        else if (color === 'g') { delete args.allianceColor()[allianceID]; }
         else if (color === 'b') { args.allianceColor()[allianceID] = 'g'; }
         else { args.allianceColor()[allianceID] = 'b'; }
       }
@@ -37,8 +39,8 @@ module.exports = (function() {
   ffs.view = function(ctrl, args) {
     return m('div', [
       m('.row',
-        ['r', 'g', 'b'].map(color =>
-          m('.col-md-4', [
+        ['r', 'g', 'b', 'y'].map(color =>
+          m('.col-md-3', [
             m.component(summary, {
               characters: ctrl.characters.bind(this, color),
               alliances: ctrl.alliances.bind(this, color),
@@ -50,8 +52,8 @@ module.exports = (function() {
         )
       ),
       m('.row',
-        ['r', 'g', 'b'].map(color =>
-          m('.col-md-4', [
+        ['r', 'g', 'b', 'y'].map(color =>
+          m('.col-md-3', [
             m.component(shiplist, {
               kms: ctrl.kms.bind(this, color)
             })
