@@ -46,7 +46,8 @@ module.exports = (function() {
               alliances: ctrl.alliances.bind(this, color),
               kms: ctrl.kms.bind(this, color),
               moveRight: ctrl.moveRight.bind(this, color),
-              moveLeft: ctrl.moveLeft.bind(this, color)
+              moveLeft: ctrl.moveLeft.bind(this, color),
+              dropped: alliance => { args.allianceColor()[alliance.id] = color; m.redraw(); }
             })
           ])
         )
