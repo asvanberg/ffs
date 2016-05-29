@@ -35,7 +35,7 @@ module.exports = (function() {
       return null;
     }
     var systems = sections[0].split(',');
-    if (systems.some(isNaN)) {
+    if (systems.map(s => parseInt(s, RADIX)).some(isNaN)) {
       return null;
     }
     var time = sections[1].split('+');
