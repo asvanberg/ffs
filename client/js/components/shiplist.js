@@ -1,4 +1,5 @@
 module.exports = (function() {
+  require('../util/polyfill');
   var m = require('mithril');
 
   var shiplist = {};
@@ -16,15 +17,6 @@ module.exports = (function() {
     else if (num > 1e9) { return `${(num / 1e9).toFixed(2)}B`; }
     else if (num > 1e6) { return `${(num / 1e6).toFixed(2)}M`; }
     else { return `${(num / 1e3).toFixed(2)}K`; }
-  }
-
-  if (!Array.prototype.groupBy) {
-    Array.prototype.groupBy = function(f) {
-      return this.reduce((map, v) => {
-        (map[f(v)] = map[f(v)] || []).push(v);
-        return map;
-      }, {});
-    }
   }
 
   shiplist.view = function(ctrl) {

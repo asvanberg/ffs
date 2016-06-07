@@ -1,4 +1,5 @@
 (function() {
+  require('./util/polyfill');
   var m = require('mithril'),
       z = require('./components/zkillboard'),
       form = require('./components/form'),
@@ -6,12 +7,6 @@
       codec = require('./util/codec');
 
   const NUM_CHARACTERS_RELEVANT_CUTOFF = 10;
-
-  if (!Array.prototype.nubBy) {
-    Array.prototype.nubBy = function(f) {
-      return this.filter((value, index, self) => self.findIndex(duplicate => f(duplicate) === f(value)) === index);
-    }
-  }
 
   m.route.mode = 'pathname';
 
