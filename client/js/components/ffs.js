@@ -41,7 +41,7 @@ module.exports = (function() {
     function makeTeamComponent(individualComponent) {
       return {view() {
         return m('.row', ['r', 'g', 'b', 'y'].map(color =>
-          m('.col-md-3', m(individualComponent(color)))
+          m('.col-md-3', {key: color}, individualComponent(color))
         ))
       }};
     }
