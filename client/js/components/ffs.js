@@ -2,6 +2,7 @@ module.exports = (function() {
   var z = require('./zkillboard'),
       m = require('mithril'),
       summary = require('./summary'),
+      tabs = require('../util/tabs'),
       shiplist = require('./shiplist');
 
   var ffs = {};
@@ -37,30 +38,31 @@ module.exports = (function() {
   }
 
   ffs.view = function(ctrl, args) {
+    function makeTeamComponent(individualComponent) {
+      return {view() {
+        return m('.row', ['r', 'g', 'b', 'y'].map(color =>
+          m('.col-md-3', m(individualComponent(color)))
+        ))
+      }};
+    }
+
     return m('div', [
-      m('.row',
-        ['r', 'g', 'b', 'y'].map(color =>
-          m('.col-md-3', [
-            m.component(summary, {
-              characters: ctrl.characters.bind(this, color),
-              alliances: ctrl.alliances.bind(this, color),
-              kms: ctrl.kms.bind(this, color),
-              moveRight: ctrl.moveRight.bind(this, color),
-              moveLeft: ctrl.moveLeft.bind(this, color),
-              dropped: alliance => { args.allianceColor()[alliance.id] = color; m.redraw(); }
-            })
-          ])
-        )
-      ),
-      m('.row',
-        ['r', 'g', 'b', 'y'].map(color =>
-          m('.col-md-3', [
-            m.component(shiplist, {
-              kms: ctrl.kms.bind(this, color)
-            })
-          ])
-        )
-      )
+      m(makeTeamComponent(color =>
+        m.component(summary, {
+          characters: ctrl.characters.bind(this, color),
+          alliances: ctrl.alliances.bind(this, color),
+          kms: ctrl.kms.bind(this, color),
+          moveRight: ctrl.moveRight.bind(this, color),
+          moveLeft: ctrl.moveLeft.bind(this, color),
+          dropped: alliance => { args.allianceColor()[alliance.id] = color; m.redraw(); }
+        })
+      )),
+      m(tabs, {tabs: () => [
+        {
+          title: m.prop('Detailed losses'),
+          component: makeTeamComponent(color => m.component(shiplist, {kms: ctrl.kms.bind(this, color)}))
+        }
+      ]})
     ]);
   }
 
