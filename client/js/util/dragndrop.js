@@ -37,7 +37,7 @@ module.exports = (function() {
         }
       }
 
-      element.setAttribute('dropzone', `${operation} s:${accepts}`);
+      element.setAttribute('dropzone', `${operation} string:${accepts}`);
       element.addEventListener('dragover', dragHandler, false);
       element.addEventListener('dragenter', dragHandler, false);
       element.addEventListener('dragleave', clearActive.bind(null, element), false);

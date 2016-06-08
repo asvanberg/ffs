@@ -43,7 +43,7 @@ module.exports = (function() {
     return m('form.form-inline.well.well-sm', {onsubmit: e => { e.preventDefault(); !args.loading() && args.submit() }}, [
       m('.form-group', [
         m('label', {for: 'solarSystem'}, 'Solar system'), ' ',
-        m.component(solarSystem, {selected: args.solarSystems})
+        m.component(solarSystem, {id: 'solarSystem', selected: args.solarSystems})
       ]), ' ',
       m('.form-group', [
         m('label', {for: 'fromDate'}, 'From date'), ' ',

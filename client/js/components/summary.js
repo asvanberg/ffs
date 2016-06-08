@@ -32,10 +32,10 @@ module.exports = (function() {
         ' totalling ',
         m('strong', [prettyNumber(ctrl.isk(args.kms())), ' ISK'])
       ]),
-      m('.list-group', [
-        !args.alliances().length ? m('.list-group-item.text-muted', 'Drag alliances here') : undefined,
+      m('ul.list-group', [
+        !args.alliances().length ? m('li.list-group-item.text-muted', 'Drag alliances here') : undefined,
         args.alliances().map(alliance =>
-          m('a.list-group-item', {key: alliance.id, config: dnd.source(alliance, 'alliance', 'move')}, [
+          m('li.list-group-item', {key: alliance.id, config: dnd.source(alliance, 'alliance', 'move')}, [
             m('button.pull-left.btn.btn-xs', {onclick: args.moveLeft.bind(this, alliance.id)}, m.trust('&larr;')),
             alliance.name || m('i', 'Unaffiliated'),
             ' (', ctrl.numCharacters([alliance]), ')',

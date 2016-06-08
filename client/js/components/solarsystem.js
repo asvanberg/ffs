@@ -81,7 +81,7 @@ module.exports = (function() {
       args.selected().map(solarSystem =>
         m('span.label.label-default', {key: solarSystem.id, style: {'margin-right':'3px'}}, solarSystem.name)
       ),
-      m('input', {key: 'input', onkeydown: ctrl.onkeydown, onkeyup: m.withAttr('value', ctrl.search), style: {border: 'none'}}),
+      m('input', {id: args.id, key: 'input', onkeydown: ctrl.onkeydown, onkeyup: m.withAttr('value', ctrl.search), style: {border: 'none'}}),
       m('.list-group', {style: {position: 'absolute', 'margin-top': '4px', right: '-1px', left: '-1px', 'z-index': 10000}}, [
         ctrl.matches().map((solarSystem, index) =>
           m('a.list-group-item', {key: solarSystem.id, onclick: ctrl.select.bind(this, solarSystem), class: (index === ctrl.selectedIndex() ? 'active': '')}, solarSystem.name)

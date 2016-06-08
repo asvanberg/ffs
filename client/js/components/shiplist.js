@@ -33,7 +33,7 @@ module.exports = (function() {
         m('.media', {key: km.killID}, [
           m('.media-left',
             m('a', {href: `https://zkillboard.com/kill/${km.killID}/`},
-              m('img.img-rounded', {src: `https://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_64.png`}))),
+              m('img.img-rounded', {src: `https://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_64.png`, alt: 'Unknown ship', 'width': 64, 'height': 64}))),
           m('.media-body', [
             m('h4.media-heading',
               m('a', {href: `https://zkillboard.com/character/${km.victim.characterID}/`},
