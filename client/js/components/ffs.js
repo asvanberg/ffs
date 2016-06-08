@@ -3,6 +3,7 @@ module.exports = (function() {
       m = require('mithril'),
       summary = require('./summary'),
       tabs = require('../util/tabs'),
+      replay = require('./replay'),
       shiplist = require('./shiplist');
 
   var ffs = {};
@@ -61,6 +62,10 @@ module.exports = (function() {
         {
           title: m.prop('Detailed losses'),
           component: makeTeamComponent(color => m.component(shiplist, {kms: ctrl.kms.bind(this, color)}))
+        },
+        {
+          title: m.prop('Replay'),
+          component: makeTeamComponent(color => m.component(replay, {kms: ctrl.kms.bind(this, color), from: args.from, to: args.to}))
         }
       ]})
     ]);

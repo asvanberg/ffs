@@ -1,0 +1,36 @@
+div.form-control input:focus {
+  outline: none;
+}
+/* Stupid Bootstrap bug */
+@media(min-width: 768px) {
+  .navbar-static-top .navbar-collapse {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+/* No pseudo-classes ...yet */
+.active-drop-target {
+  box-shadow: 0 0 0.5em green;
+}
+.nav-tabs {
+  margin-bottom: 15px;
+}
+.dead {
+  border: 2px solid red;
+  margin: 1px;
+}
+.alive {
+  margin: 3px;
+}
+output {
+  padding-top: 0;
+}
+.replay-controls {
+  display: flex;
+}
+.replay-controls > * {
+  margin-right: 4px;
+}
+.replay-controls > *:last-child {
+  margin-right: 0;
+}

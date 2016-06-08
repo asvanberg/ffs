@@ -120,6 +120,8 @@
           ? m('.text-center', [m('img[src=ajax-loader.gif]'), m('p', 'Fetching killmails')])
           : (ctrl.kms().length
             ? m.component(ffs, {
+              from: ctrl.from,
+              to: ctrl.to,
               kms: ctrl.kms,
               allianceColor: ctrl.allianceColor,
               alliances: ctrl.alliances,
