@@ -1,5 +1,6 @@
 module.exports = (function() {
-  const m = require('mithril');
+  const m = require('mithril')
+      , db = require('../util/database')
 
   const replay = {};
 
@@ -25,7 +26,7 @@ module.exports = (function() {
     const shipGroups = args.kms().groupBy(km => km.victim.shipTypeID);
     const shipTypeIDs = Object.keys(shipGroups);
     const duration = ctrl.duration(args.from(), args.to());
-    // TODO: Sort shiptype ids
+    shipTypeIDs.sort((a, b) => db.ship(a).mass > db.ship(b).mass ? -1 : 1);
 
     return m('div', [
       m('.replay-controls', [
@@ -42,7 +43,7 @@ module.exports = (function() {
       ]),
       shipTypeIDs.map(shipTypeID =>
         m('div', [
-          m('h6', shipTypeID),
+          m('h5', db.ship(shipTypeID).name),
           shipGroups[shipTypeID].map(km =>
             m('img.img-rounded', {src: `https://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_32.png`, class: ctrl.isDead(km) ? 'dead' : 'alive'})
           )
