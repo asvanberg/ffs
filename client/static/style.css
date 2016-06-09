@@ -15,6 +15,10 @@ div.form-control input:focus {
 .nav-tabs {
   margin-bottom: 15px;
 }
+img {
+  /* If I specify width/height on an <img> I want it to be that high regardless of border */
+  box-sizing: content-box;
+}
 .dead {
   border: 2px solid red;
   margin: 1px;

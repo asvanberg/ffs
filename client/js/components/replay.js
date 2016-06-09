@@ -45,7 +45,15 @@ module.exports = (function() {
         m('div', [
           m('h5', db.ship(shipTypeID).name),
           shipGroups[shipTypeID].map(km =>
-            m('img.img-rounded', {src: `https://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_32.png`, class: ctrl.isDead(km) ? 'dead' : 'alive'})
+            m('a', {href: `https://zkillboard.com/kill/${km.killID}/`},
+              m('img.img-rounded', {
+                src: `https://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_32.png`,
+                class: ctrl.isDead(km) ? 'dead' : 'alive',
+                width: 32,
+                height: 32,
+                alt: db.ship(shipTypeID).name
+              })
+            )
           )
         ])
       )
