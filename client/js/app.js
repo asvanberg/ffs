@@ -4,40 +4,21 @@
       z = require('./components/zkillboard'),
       form = require('./components/form'),
       ffs = require('./components/ffs'),
-      codec = require('./util/codec');
-
-  const NUM_CHARACTERS_RELEVANT_CUTOFF = 10;
+      codec = require('./util/codec'),
+      analyser = require('./util/analyser');
 
   m.route.mode = 'pathname';
 
-  function analyze(kms) {
-    const [characters, alliances] = kms.reduce(([characters, alliances], km) => {
-      const victimAlliance = {id: km.victim.allianceID, name: km.victim.allianceName};
-      const victim = {id: km.victim.characterID, name: km.victim.characterName, alliance: victimAlliance};
-
-      const [ac, aa] = km.attackers.reduce(([attackingCharacters, attackingAlliances], attacker) => {
-        const attackingAlliance = {id: attacker.allianceID, name: attacker.allianceName};
-        const attackingCharacter = {id: attacker.characterID, name: attacker.characterName, alliance: attackingAlliance};
-        return [attackingCharacters.concat(attackingCharacter), attackingAlliances.concat(attackingAlliance)];
-      }, [[],[]]);
-
-      return [characters.concat(victim, ac), alliances.concat(victimAlliance, aa)];
-    }, [[], []]);
-    return [characters.nubBy(c => c.id), alliances.nubBy(a => a.id)];
-  }
-
-  function relevant(kms, characters, alliances) {
-    function numCharacters(alliance) {
-      return characters.filter(character => character.alliance.id === alliance.id).length;
-    }
-    const relevantAlliances = alliances.filter(alliance => alliance.id && numCharacters(alliance) >= NUM_CHARACTERS_RELEVANT_CUTOFF);
-    const relevantCharacters = characters.filter(character => relevantAlliances.some(alliance => alliance.id === character.alliance.id));
-    const relevantKMs = kms.filter(km => relevantAlliances.some(alliance => alliance.id === km.victim.allianceID));
-    return [relevantKMs, relevantCharacters, relevantAlliances];
-  }
-
   m.mount(document.getElementById('app'), {
     controller() {
+      const updateKMs = (kms) => {
+        const [characters, alliances] = analyser.analyse(kms);
+        const [relevantKMs, relevantCharacters, relevantAlliances] = analyser.relevant(kms, characters, alliances);
+        this.kms(relevantKMs);
+        this.characters(relevantCharacters);
+        this.alliances(relevantAlliances);
+      }
+
       var filter = codec.decode(document.location.hash.substring(1)) || {};
 
       this.loading = m.prop(false);
@@ -48,39 +29,35 @@
       this.kms = m.prop([]);
       this.alliances = m.prop([]);
       this.characters = m.prop([]);
-      this.fetch = (function() {
+      this.fetch = () => {
         if (!(this.solarSystems().length && this.from() && this.to())) {
           return;
         }
         this.loading(true);
         this.kms([]);
 
+        const state = {
+          from: this.from(),
+          to: this.to(),
+          solarSystems: this.solarSystems(),
+          allianceColors: this.allianceColor()
+        };
+        const hash = `#${codec.encode(state)}`;
+        const title = `Fight in ${this.solarSystems().map(s => s.name).join(', ')} on ${this.from().toDateString()}`;
+        if (hash !== document.location.hash) {
+          window.history.pushState(state, title, hash);
+        }
+
         z.fetchAll(this.solarSystems(), this.from(), this.to())
           .then(kms => {
-            const [characters, alliances] = analyze(kms);
-            const [relevantKMs, relevantCharacters, relevantAlliances] = relevant(kms, characters, alliances);
-            this.kms(relevantKMs);
-            this.characters(relevantCharacters);
-            this.alliances(relevantAlliances);
+            state.kms = kms;
+            window.history.replaceState(state, title, hash);
+            return kms;
           })
+          .then(updateKMs)
           .then(this.loading.bind(this, false))
           .then(m.redraw)
-          .then(() => {
-            const state = {
-              from: this.from(),
-              to: this.to(),
-              solarSystems: this.solarSystems(),
-              allianceColors: this.allianceColor(),
-              kms: this.kms()
-            };
-            const hash = codec.encode(state);
-            if (hash !== document.location.hash) {
-              const title = `Fight in ${this.solarSystems().map(s => s.name).join(', ')} on ${this.from().toDateString()}`;
-              window.history.pushState(state, title, `#${hash}`);
-              document.title = title;
-            }
-          });
-      }).bind(this);
+      };
 
       window.addEventListener('popstate', e => {
         const filter = e.state;
@@ -89,10 +66,12 @@
           this.from(filter.from);
           this.to(filter.to);
           this.allianceColor(filter.allianceColors);
-          this.kms(filter.kms);
-          const [characters, alliances] = analyze(filter.kms);
-          this.characters(characters);
-          this.alliances(alliances);
+          if (filter.kms) {
+            updateKMs(filter.kms);
+          }
+          else {
+            this.fetch();
+          }
         }
         else {
           this.solarSystems([]);
