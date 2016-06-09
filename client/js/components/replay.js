@@ -25,7 +25,6 @@ module.exports = (function() {
 
     const shipGroups = args.kms().groupBy(km => km.victim.shipTypeID);
     const shipTypeIDs = Object.keys(shipGroups);
-    const duration = ctrl.duration(args.from(), args.to());
     shipTypeIDs.sort((a, b) => db.ship(a).mass > db.ship(b).mass ? -1 : 1);
 
     return m('div', [
