@@ -24,7 +24,7 @@ module.exports = (function() {
 
     this.matches = m.prop([]);
 
-    this.search = debounce(function(str) {
+    this.search = debounce(str => {
       if (str.length < 2) {
         this.matches([]);
       }
@@ -36,16 +36,16 @@ module.exports = (function() {
           .slice(0, 10));
       }
       m.redraw();
-    }.bind(this), 250);
+    }, 250);
 
-    this.select = function(solarSystem) {
+    this.select = (solarSystem) => {
       args.selected().push(solarSystem);
       this.matches([]);
-    }.bind(this);
+    };
 
     this.selectedIndex = m.prop(0);
 
-    this.onkeydown = function(event) {
+    this.onkeydown = (event) => {
       var idx = this.selectedIndex();
       switch (event.keyCode) {
         case 38: // arrow up
@@ -73,7 +73,7 @@ module.exports = (function() {
           }
           break;
       }
-    }.bind(this);
+    };
   };
 
   solarSystem.view = function(ctrl, args) {

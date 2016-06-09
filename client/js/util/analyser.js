@@ -1,13 +1,8 @@
 module.exports = (function() {
+  require('./polyfill');
   const analyser = {}
 
   const NUM_CHARACTERS_RELEVANT_CUTOFF = 10;
-
-  if (!Array.prototype.nubBy) {
-    Array.prototype.nubBy = function(f) {
-      return this.filter((value, index, self) => self.findIndex(duplicate => f(duplicate) === f(value)) === index);
-    }
-  }
 
   analyser.analyse = (kms) => {
     const [characters, alliances] = kms.reduce(([characters, alliances], km) => {

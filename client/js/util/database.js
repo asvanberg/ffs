@@ -46,14 +46,14 @@ module.exports = (function() {
 
   function unknownShip(shipTypeID) {
     return {
-      "capacity":0,
-      "portionSize":0,
-      "volume":0,
-      "radius":0,
-      "published":false,
-      "mass":0,
-      "id":shipTypeID,
-      "name":"Unknown"
+      capacity: 0,
+      portionSize: 0,
+      volume: 0,
+      radius: 0,
+      published: false,
+      mass: 0,
+      id: shipTypeID,
+      name: 'Unknown'
     };
   }
 

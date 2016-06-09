@@ -20,7 +20,7 @@ module.exports = (function() {
   replay.view = (ctrl, args) => {
     function prettyDuration(duration) {
       function zeroPad(n) { return n <= 9 ? '0' + n : n; }
-      return Math.floor(duration / 60) + ":" + zeroPad(duration % 60);
+      return Math.floor(duration / 60) + ':' + zeroPad(duration % 60);
     }
 
     const shipGroups = args.kms().groupBy(km => km.victim.shipTypeID);
