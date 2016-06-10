@@ -38,3 +38,27 @@ output {
 .replay-controls > *:last-child {
   margin-right: 0;
 }
+[data-tooltip] {
+  position: relative;
+}
+[data-tooltip]::after {
+  display: block;
+  visibility: hidden;
+  position: absolute;
+  left: 95%;
+  opacity: 0;
+  content: attr(data-tooltip);
+  padding: 4px 6px;
+  z-index: 999;
+  color: black;
+  background: rgb(255, 229, 204);
+  border-radius: 5px;
+  border: 1px solid black;
+  white-space: nowrap;
+  transition: all 0.3s ease-in-out;
+}
+
+[data-tooltip]:hover::after {
+  visibility: visible;
+  opacity: 1;
+}

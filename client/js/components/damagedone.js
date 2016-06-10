@@ -36,24 +36,24 @@ module.exports = (function() {
 
     return m('div', damageDoneByPilots.map(({character, corporation, shipTypeID, damageDone}) => {
       return m('.replay-controls', [
-        m('img.img-rounded', {
+        m('span', {'data-tooltip': character.name}, m('img.img-rounded', {
           src: `https://imageserver.eveonline.com/Character/${character.id}_32.jpg`,
           width: 32,
           height: 32,
           alt: character.name
-        }),
-        m('img.img-rounded', {
+        })),
+        m('span', {'data-tooltip': corporation.name}, m('img.img-rounded', {
           src: `https://imageserver.eveonline.com/Corporation/${corporation.id}_32.png`,
           width: 32,
           height: 32,
           alt: corporation.name
-        }),
-        m('img.img-rounded', {
+        })),
+        m('span', {'data-tooltip': db.ship(shipTypeID).name}, m('img.img-rounded', {
           src: `https://imageserver.eveonline.com/Type/${shipTypeID}_32.png`,
           width: 32,
           height: 32,
           alt: db.ship(shipTypeID).name
-        }),
+        })),
         m('.progress', {style: {width: '100%'}},
           m('.progress-bar', {style: {width: `${damageDone / maxDamage * 100}%`}, height: '32px'}, damageDone)
         )
