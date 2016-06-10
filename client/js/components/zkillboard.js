@@ -1,6 +1,8 @@
 module.exports = (function() {
   var m = require('mithril');
 
+  const ZKILLBOARD_API_TIMEOUT = 10 * 1000;
+
   function zeroPad(num) {
     return num < 10 ? `0${num}` : num;
   }
@@ -18,7 +20,10 @@ module.exports = (function() {
     return m.request({
       method: 'GET',
       url: `https://zkillboard.com/api/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/no-items/`,
-      background: true
+      background: true,
+      config: xhr => {
+        xhr.timeout = ZKILLBOARD_API_TIMEOUT;
+      }
     });
   };
 
@@ -37,7 +42,7 @@ module.exports = (function() {
           else {
             deferred.resolve(kms);
           }
-        });
+        }, deferred.reject);
     }
     go(1);
 

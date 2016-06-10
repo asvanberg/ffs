@@ -22,6 +22,7 @@
       var filter = codec.decode(document.location.hash.substring(1)) || {};
 
       this.loading = m.prop(false);
+      this.error = m.prop(false);
       this.solarSystems = m.prop([]);
       this.from = m.prop(filter.from || new Date(Date.now() - 1000 * 60 * 60)); // One hour ago
       this.to = m.prop(filter.to || new Date());
@@ -33,6 +34,7 @@
         if (!(this.solarSystems().length && this.from() && this.to())) {
           return;
         }
+        this.error(false);
         this.loading(true);
         this.kms([]);
 
@@ -61,6 +63,7 @@
             return kms;
           })
           .then(updateKMs)
+          .then(null, this.error.bind(this, true))
           .then(this.loading.bind(this, false))
           .then(m.redraw)
       };
@@ -101,10 +104,18 @@
           to: ctrl.to,
           submit: ctrl.fetch
         }),
-        (ctrl.loading()
-          ? m('.text-center', [m('img[src=ajax-loader.gif]'), m('p', 'Fetching killmails')])
-          : (ctrl.kms().length
-            ? m.component(ffs, {
+        (() => {
+          if (ctrl.loading()) {
+            return m('.text-center', [m('img[src=ajax-loader.gif]'), m('p', 'Fetching killmails')])
+          }
+          else if (ctrl.error()) {
+            return m('.text-center', [
+              m('span.glyphicon.glyphicon-remove-sign.text-danger', {style: {'font-size': '32px'}}),
+              m('p', ['zKillboard appears to be down, ', m('a', {onclick: ctrl.fetch}, 'retry'), '.'])
+            ])
+          }
+          else if (ctrl.kms().length) {
+            return m.component(ffs, {
               from: ctrl.from,
               to: ctrl.to,
               kms: ctrl.kms,
@@ -112,7 +123,11 @@
               alliances: ctrl.alliances,
               characters: ctrl.characters
             })
-            : m('p', 'No killmails found')))
+          }
+          else {
+            return m('p', 'No killmails found')
+          }
+        })()
       ];
     }
   })
