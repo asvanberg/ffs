@@ -4,6 +4,7 @@ module.exports = (function() {
       summary = require('./summary'),
       tabs = require('../util/tabs'),
       replay = require('./replay'),
+      damagedone = require('./damagedone'),
       shiplist = require('./shiplist');
 
   var ffs = {};
@@ -66,6 +67,10 @@ module.exports = (function() {
         {
           title: m.prop('Replay'),
           component: makeTeamComponent(color => m.component(replay, {kms: ctrl.kms.bind(this, color), from: args.from, to: args.to}))
+        },
+        {
+          title: m.prop('Damage done'),
+          component: makeTeamComponent(color => m.component(damagedone, {kms: args.kms, characters: ctrl.characters.bind(this, color)}))
         }
       ]})
     ]);
