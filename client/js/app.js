@@ -51,7 +51,13 @@
         z.fetchAll(this.solarSystems(), this.from(), this.to())
           .then(kms => {
             state.kms = kms;
-            window.history.replaceState(state, title, hash);
+            try { window.history.replaceState(state, title, hash) }
+            catch (ignored) {
+              // Firefox throws exception if the state is too large.
+              // Simply ignore it and Firefox will have to refetch the
+              // killmails when going back/forward while browsers that can
+              // store the killmails in the state won't have to
+            }
             return kms;
           })
           .then(updateKMs)
