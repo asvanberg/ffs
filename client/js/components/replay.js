@@ -13,6 +13,9 @@ module.exports = (function() {
       },
       duration() {
         return (args.to().getTime() - args.from().getTime()) / 1000;
+      },
+      countDead(shipTypeID) {
+        return args.kms().filter(km => km.victim.shipTypeID === shipTypeID).filter(this.isDead).length;
       }
     }
   }
@@ -42,7 +45,7 @@ module.exports = (function() {
       ]),
       shipTypeIDs.map(shipTypeID =>
         m('div', [
-          m('h5', db.ship(shipTypeID).name),
+          m('h5', [db.ship(shipTypeID).name, ' [', ctrl.countDead(parseInt(shipTypeID)), '/', shipGroups[shipTypeID].length, ']']),
           shipGroups[shipTypeID].map(km =>
             m('a', {href: `https://zkillboard.com/kill/${km.killID}/`, 'data-tooltip': km.victim.characterName},
               m('img.img-rounded', {
