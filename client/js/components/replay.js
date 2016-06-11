@@ -25,7 +25,7 @@ module.exports = (function() {
 
     const shipGroups = args.kms().groupBy(km => km.victim.shipTypeID);
     const shipTypeIDs = Object.keys(shipGroups);
-    shipTypeIDs.sort((a, b) => db.ship(a).mass > db.ship(b).mass ? -1 : 1);
+    shipTypeIDs.sortBy(shipTypeID => db.ship(shipTypeID).volume, true);
 
     return m('div', [
       m('.replay-controls', [

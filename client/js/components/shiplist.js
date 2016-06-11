@@ -1,11 +1,16 @@
 module.exports = (function() {
   require('../util/polyfill');
-  var m = require('mithril');
+  const m = require('mithril')
+      , db = require('../util/database')
 
   var shiplist = {};
 
   shiplist.controller = function(args) {
-    this.kms = args.kms;
+    return {
+      findKM(characterID, shipTypeID) {
+        return args.kms().find(km => km.victim.characterID === characterID && km.victim.shipTypeID === shipTypeID);
+      }
+    }
   }
 
   function byValue(a, b) {
@@ -19,32 +24,32 @@ module.exports = (function() {
     else { return `${(num / 1e3).toFixed(2)}K`; }
   }
 
-  shiplist.view = function(ctrl) {
-    var a = ctrl.kms().groupBy(km => km.victim.shipTypeID);
+  shiplist.view = function(ctrl, args) {
+    var a = args.characters().groupBy(character => character.ship.id);
     var b = Object.keys(a)
-      .sort((s1, s2) => {
-        var totalValue = (sum, km) => sum + km.zkb.totalValue;
-        var _s1 = a[s1].reduce(totalValue, 0);
-        var _s2 = a[s2].reduce(totalValue, 0);
-        return (_s2 / a[s2].length) - (_s1 / a[s1].length);
-      });
+      .sortBy(shipTypeID => db.ship(shipTypeID).volume, true);
     return m('div', b.map(shipTypeID =>
-      a[shipTypeID].map(km =>
-        m('.media', {key: km.killID}, [
+      a[shipTypeID].sortBy(character => character.name.toUpperCase()).map(character => {
+        const km = ctrl.findKM(character.id, character.ship.id);
+        return m('.media', {key: `${character.id}-${shipTypeID}`, class: km ? 'bg-danger' : ''}, [
           m('.media-left',
-            m('a', {href: `https://zkillboard.com/kill/${km.killID}/`},
-              m('img.img-rounded', {src: `https://imageserver.eveonline.com/Type/${km.victim.shipTypeID}_64.png`, alt: 'Unknown ship', 'width': 64, 'height': 64}))),
+            (img => km
+              ? m('a', {href: `https://zkillboard.com/kill/${km.killID}/`}, img)
+              : img
+            )(m('img.img-rounded', {src: `https://imageserver.eveonline.com/Type/${shipTypeID}_64.png`, alt: db.ship(character.ship.id).name, 'width': 64, 'height': 64}))
+          ),
           m('.media-body', [
             m('h4.media-heading',
-              m('a', {href: `https://zkillboard.com/character/${km.victim.characterID}/`},
-                km.victim.characterName)),
-            km.victim.corporationName,
-            (km.victim.allianceName ? [' (', km.victim.allianceName, ')'] : null),
+              m('a', {href: `https://zkillboard.com/character/${character.id}/`},
+                character.name)),
+            character.corporation.name,
+            (character.alliance.name ? [' (', character.alliance.name, ')'] : null),
             m('br'),
-            prettyNumber(km.zkb.totalValue), ' ISK'
+            db.ship(shipTypeID).name,
+            km ? [' worth ', prettyNumber(km.zkb.totalValue), ' ISK'] : null
           ])
         ])
-      )
+      })
     ));
   }
 

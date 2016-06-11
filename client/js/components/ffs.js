@@ -61,8 +61,8 @@ module.exports = (function() {
       )),
       m(tabs, {tabs: () => [
         {
-          title: m.prop('Detailed losses'),
-          component: makeTeamComponent(color => m.component(shiplist, {kms: ctrl.kms.bind(this, color)}))
+          title: m.prop('Involved'),
+          component: makeTeamComponent(color => m.component(shiplist, {kms: ctrl.kms.bind(this, color), characters: ctrl.characters.bind(this, color)}))
         },
         {
           title: m.prop('Replay'),

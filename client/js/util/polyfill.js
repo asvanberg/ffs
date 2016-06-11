@@ -14,6 +14,21 @@ module.exports = (function() {
     }
   }
 
+  if (!Array.prototype.sortBy) {
+    Array.prototype.sortBy = function(f, reverse = false) {
+      return this.sort((e1, e2) => {
+        function cmp(a, b) {
+          if (a < b) { return -1; }
+          else if (a > b) { return 1; }
+          else { return 0; }
+        }
+
+        const s1 = f(e1), s2 = f(e2);
+        return reverse ? cmp(s2, s1) : cmp(s1, s2);
+      });
+    }
+  }
+
   if (!Array.prototype.includes) {
     Array.prototype.includes = function(searchElement) {
       return this.some(e => e === searchElement);
@@ -24,16 +39,5 @@ module.exports = (function() {
     Array.prototype.flatMap = function(lambda) {
       return Array.prototype.concat.apply([], this.map(lambda));
     }
-  }
-
-  if (!Object.values) {
-    let reduce = Function.bind.call(Function.call, Array.prototype.reduce);
-    let isEnumerable = Function.bind.call(Function.call, Object.prototype.propertyIsEnumerable);
-    let concat = Function.bind.call(Function.call, Array.prototype.concat);
-    let keys = Reflect.ownKeys;
-
-  	Object.values = function values(O) {
-  		return reduce(keys(O), (v, k) => concat(v, typeof k === 'string' && isEnumerable(O, k) ? [O[k]] : []), []);
-  	};
   }
 })();
