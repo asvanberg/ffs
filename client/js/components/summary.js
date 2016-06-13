@@ -19,6 +19,7 @@ module.exports = (function() {
       return args.characters()
         .filter(character =>
           alliances.some(alliance => alliance.id === character.alliance.id))
+        .nubBy(character => character.id)
         .length;
     }
   }
