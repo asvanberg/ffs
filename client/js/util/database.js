@@ -24,7 +24,7 @@ module.exports = (function() {
     toProcess.forEach(shipTypeID => {
       m.request({
         method: 'GET',
-        url: `https://crest-tq.eveonline.com/types/${shipTypeID}/`,
+        url: `https://crest-tq.eveonline.com/inventory/types/${shipTypeID}/`,
         background: true
       })
         .then(result => {
