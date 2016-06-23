@@ -70,7 +70,7 @@ module.exports = (function() {
         },
         {
           title: m.prop('Damage done'),
-          component: makeTeamComponent(color => m.component(damagedone, {kms: args.kms, characters: ctrl.characters.bind(this, color)}))
+          component: m(damagedone, {kms: args.kms, colors: ['r', 'g', 'b', 'y'], characters: ctrl.characters})
         }
       ]})
     ]);

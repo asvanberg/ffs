@@ -1,7 +1,7 @@
 module.exports = (function() {
-  require('../util/polyfill')
+  require('../../util/polyfill')
   const m = require('mithril')
-      , db = require('../util/database')
+      , db = require('../../util/database')
   const damagedone = {};
 
   function zero(character, corporation, shipTypeID) {
@@ -28,7 +28,8 @@ module.exports = (function() {
     const [damageDoneByPilots, maxDamage] = ctrl.calculateDamageDoneByPilots(args.characters(), args.kms());
     damageDoneByPilots.sortBy(([pilot, damageDone]) => damageDone, true);
 
-    return m('div', damageDoneByPilots.map(([{id, name, corporation, ship}, damageDone]) => {
+    return m('div', damageDoneByPilots.map(([character, damageDone]) => {
+      const {id, name, corporation, ship} = character;
       return m('.replay-controls', [
         m('span', {'data-tooltip': name}, m('img.img-rounded', {
           src: `https://imageserver.eveonline.com/Character/${id}_32.jpg`,
@@ -48,7 +49,7 @@ module.exports = (function() {
           height: 32,
           alt: db.ship(ship.id).name
         })),
-        m('.progress', {style: {width: '100%'}},
+        m('a.progress', {onclick: args.select.bind(this, character), style: {width: '100%'}},
           m('.progress-bar', {style: {width: `${damageDone / maxDamage * 100}%`}, height: '32px'}, damageDone)
         )
       ])
