@@ -62,3 +62,10 @@ output {
   visibility: visible;
   opacity: 1;
 }
+.progress {
+  text-shadow: 1px 1px black;
+}
+a:hover {
+  /* Nearly all <a> tags lack a href and browsers dont switch to a hand */
+  cursor: pointer;
+}
