@@ -1,7 +1,12 @@
 module.exports = (function() {
   if (!Array.prototype.nubBy) {
     Array.prototype.nubBy = function(f) {
-      return this.filter((value, index, self) => self.findIndex(duplicate => f(duplicate) === f(value)) === index);
+      // Credits to georg (http://stackoverflow.com/a/9229821)
+      const seen = {};
+      return this.filter(item => {
+        var key = f(item);
+        return seen.hasOwnProperty(key) ? false : (seen[key] = true);
+      });
     }
   }
 
