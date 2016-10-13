@@ -37,6 +37,7 @@ module.exports = (function() {
         })
         .then(result => {
           localStorage.setItem(keyify(shipTypeID), JSON.stringify(result));
+          queue.splice(queue.indexOf(result.id), 1)
           return result;
         })
         .then(m.redraw)
