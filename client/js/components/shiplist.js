@@ -5,14 +5,6 @@ module.exports = (function() {
 
   var shiplist = {};
 
-  shiplist.controller = function(args) {
-    return {
-      findKM(characterID, shipTypeID) {
-        return args.kms().find(km => km.victim.characterID === characterID && km.victim.shipTypeID === shipTypeID);
-      }
-    }
-  }
-
   function byValue(a, b) {
     return b.zkb.totalValue - a.zkb.totalValue;
   }
@@ -25,12 +17,12 @@ module.exports = (function() {
   }
 
   shiplist.view = function(ctrl, args) {
-    var a = args.characters().groupBy(character => character.ship.id);
-    var b = Object.keys(a)
+    const a = args.characters().groupBy(character => character.ship.id);
+    const b = Object.keys(a)
       .sortBy(shipTypeID => db.ship(shipTypeID).volume, true);
     return m('div', b.map(shipTypeID =>
       a[shipTypeID].sortBy(character => character.name.toUpperCase()).map(character => {
-        const km = ctrl.findKM(character.id, character.ship.id);
+        const km = character.km;
         return m('.media', {key: `${character.id}-${shipTypeID}`, class: km ? 'bg-danger' : ''}, [
           m('.media-left',
             (img => km

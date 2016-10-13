@@ -23,7 +23,12 @@ module.exports = (function() {
 
       return [characters.concat(victim, ac), alliances.concat(victimAlliance, aa)];
     }, [[], []]);
-    return [characters.nubBy(c => `${c.id}-${c.ship.id}`), alliances.nubBy(a => a.id)];
+    const [uniqueCharacters, uniqueAlliances] = [characters.nubBy(c => `${c.id}-${c.ship.id}`), alliances.nubBy(a => a.id)];
+    uniqueCharacters.forEach(character => {
+      character.km = kms.find(km => km.victim.characterID === character.id && km.victim.shipTypeID === character.ship.id);
+      return character;
+    })
+    return [uniqueCharacters, uniqueAlliances];
   }
 
   analyser.relevant = (kms, unfilteredCharacters, alliances) => {
