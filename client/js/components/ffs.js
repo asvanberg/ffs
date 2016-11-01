@@ -24,18 +24,6 @@ module.exports = (function() {
       kms(color) {
         return args.kms().filter(km => allianceColor(km.victim.allianceID) === color);
       },
-      moveRight(color, allianceID) {
-        if (color === 'r') { args.allianceColor()[allianceID] = 'g'; }
-        else if (color === 'g') { args.allianceColor()[allianceID] = 'b'; }
-        else if (color === 'b') { args.allianceColor()[allianceID] = 'y'; }
-        else { delete args.allianceColor()[allianceID]; }
-      },
-      moveLeft(color, allianceID) {
-        if (color === 'r') { args.allianceColor()[allianceID] = 'y'; }
-        else if (color === 'g') { delete args.allianceColor()[allianceID]; }
-        else if (color === 'b') { args.allianceColor()[allianceID] = 'g'; }
-        else { args.allianceColor()[allianceID] = 'b'; }
-      }
     };
   }
 
@@ -54,9 +42,9 @@ module.exports = (function() {
           characters: ctrl.characters.bind(this, color),
           alliances: ctrl.alliances.bind(this, color),
           kms: ctrl.kms.bind(this, color),
-          moveRight: ctrl.moveRight.bind(this, color),
-          moveLeft: ctrl.moveLeft.bind(this, color),
-          dropped: alliance => { args.allianceColor()[alliance.id] = color; m.redraw(); }
+          moveRight: args.moveRight.bind(this, color),
+          moveLeft: args.moveLeft.bind(this, color),
+          dropped: args.dropped.bind(this, color)
         })
       )),
       m(tabs, {tabs: () => [

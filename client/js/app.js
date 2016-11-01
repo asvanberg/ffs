@@ -9,6 +9,25 @@
 
   m.route.mode = 'pathname';
 
+  function updateHistory(settings, kms) {
+    const state = {
+      from: settings.from(),
+      to: settings.to(),
+      solarSystems: settings.solarSystems(),
+      allianceColors: settings.allianceColor(),
+      kms: kms
+    };
+    const hash = `#${codec.encode(state)}`;
+    const title = `Fight in ${settings.solarSystems().map(s => s.name).join(', ')} on ${settings.from().toDateString()}`;
+    document.title = title;
+    if (hash !== document.location.hash) {
+      window.history.pushState(state, title, hash);
+    }
+    else if (kms) {
+      window.history.replaceState(state, title, hash);
+    }
+  }
+
   m.mount(document.getElementById('app'), {
     controller() {
       const updateKMs = (kms) => {
@@ -30,6 +49,30 @@
       this.kms = m.prop([]);
       this.alliances = m.prop([]);
       this.characters = m.prop([]);
+      this.dropped = (color, alliance) => {
+        if (color === 'r') {
+          delete this.allianceColor()[alliance.id];
+        }
+        else {
+          this.allianceColor()[alliance.id] = color;
+        }
+        updateHistory(this);
+        m.redraw();
+      };
+      this.moveRight = (color, allianceID) => {
+        if (color === 'r') { this.allianceColor()[allianceID] = 'g'; }
+        else if (color === 'g') { this.allianceColor()[allianceID] = 'b'; }
+        else if (color === 'b') { this.allianceColor()[allianceID] = 'y'; }
+        else { delete this.allianceColor()[allianceID]; }
+        updateHistory(this);
+      };
+      this.moveLeft = (color, allianceID) => {
+        if (color === 'r') { this.allianceColor()[allianceID] = 'y'; }
+        else if (color === 'g') { delete this.allianceColor()[allianceID]; }
+        else if (color === 'b') { this.allianceColor()[allianceID] = 'g'; }
+        else { this.allianceColor()[allianceID] = 'b'; }
+        updateHistory(this);
+      };
       this.fetch = () => {
         if (!(this.solarSystems().length && this.from() && this.to())) {
           return;
@@ -38,22 +81,11 @@
         this.loading(true);
         this.kms([]);
 
-        const state = {
-          from: this.from(),
-          to: this.to(),
-          solarSystems: this.solarSystems(),
-          allianceColors: this.allianceColor()
-        };
-        const hash = `#${codec.encode(state)}`;
-        const title = `Fight in ${this.solarSystems().map(s => s.name).join(', ')} on ${this.from().toDateString()}`;
-        if (hash !== document.location.hash) {
-          window.history.pushState(state, title, hash);
-        }
+        updateHistory(this);
 
         z.fetchAll(this.solarSystems(), this.from(), this.to())
           .then(kms => {
-            state.kms = kms;
-            try { window.history.replaceState(state, title, hash) }
+            try { updateHistory(this, kms) }
             catch (ignored) {
               // Firefox throws exception if the state is too large.
               // Simply ignore it and Firefox will have to refetch the
@@ -121,7 +153,10 @@
               kms: ctrl.kms,
               allianceColor: ctrl.allianceColor,
               alliances: ctrl.alliances,
-              characters: ctrl.characters
+              characters: ctrl.characters,
+              dropped: ctrl.dropped,
+              moveRight: ctrl.moveRight,
+              moveLeft: ctrl.moveLeft
             })
           }
           else {
