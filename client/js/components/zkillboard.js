@@ -14,7 +14,7 @@ module.exports = (function() {
       return `${date.getUTCFullYear()}${zeroPad(date.getUTCMonth() + 1)}${zeroPad(date.getUTCDate())}`
            + `${zeroPad(date.getUTCHours())}${zeroPad(date.getUTCMinutes())}`;
     }
-    var solarSystemID = solarSystems.map(solarSystem => solarSystem.id).join(',');
+    var solarSystemID = solarSystems.map(solarSystem => solarSystem.id).sort().join(',');
     var startTime = formatDate(from);
     var endTime = formatDate(to.getTime() > Date.now() ? new Date() : to);
     return m.request({
