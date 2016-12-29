@@ -12,11 +12,17 @@ module.exports = (function() {
   zKillboard.fetchKillmails = function(solarSystems, from, to, page) {
     function formatDate(date) {
       return `${date.getUTCFullYear()}${zeroPad(date.getUTCMonth() + 1)}${zeroPad(date.getUTCDate())}`
-           + `${zeroPad(date.getUTCHours())}${zeroPad(date.getUTCMinutes())}`;
+        + `${zeroPad(date.getUTCHours())}00`;
     }
     var solarSystemID = solarSystems.map(solarSystem => solarSystem.id).sort().join(',');
     var startTime = formatDate(from);
-    var endTime = formatDate(to.getTime() > Date.now() ? new Date() : to);
+    var to_ = new Date(to.getTime());
+    if (to_.getUTCMinutes() > 0) {
+      // ZKillboard doesn't do minutes any more so if you want 19:30 the hour
+      // is set to 20
+      to_.setUTCHours(to_.getUTCHours() + 1);
+    }
+    var endTime = formatDate(to_);
     return m.request({
       method: 'GET',
       url: `https://zkillboard.com/api/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/no-items/`,
