@@ -25,7 +25,7 @@ module.exports = (function() {
     var endTime = formatDate(to_);
     return m.request({
       method: 'GET',
-      url: `https://zkillboard.com/api/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/no-items/`,
+      url: `https://zkillboard.com/api/kills/solarSystemID/${solarSystemID}/startTime/${startTime}/endTime/${endTime}/page/${page}/no-items/`,
       background: true,
       config: xhr => {
         xhr.timeout = ZKILLBOARD_API_TIMEOUT;
